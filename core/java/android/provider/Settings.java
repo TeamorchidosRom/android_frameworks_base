@@ -4842,61 +4842,9 @@ public final class Settings {
 
         /**
          * Change quick settings tiles interpolator
-         *
          * @hide
          */
         public static final String ANIM_TILE_INTERPOLATOR = "anim_tile_interpolator";
-
-        /**
-         * Whether to display qs tile titles in the qs panel
-         * @hide
-         */
-        public static final String QS_TILE_TITLE_VISIBILITY = "qs_tile_title_visibility";
-
-        /**
-         * Allow users to pull down the status bar quickly
-         * @hide
-         */
-        public static final String STATUS_BAR_QUICK_QS_PULLDOWN = "status_bar_quick_qs_pulldown";
-
-        /**
-         * Whether to show or hide the edit icon
-         * @hide
-         */
-        public static final String QS_EDIT_TOGGLE = "qs_edit_toggle";
-
-        /**
-         * Quick Settings Smart Pulldown
-         * @hide
-         */
-        public static final String QS_SMART_PULLDOWN = "qs_smart_pulldown";
-
-        /**
-         * Applications list where heasdup should't show
-         *
-         * @hide
-         */
-        public static final String HEADS_UP_STOPLIST_VALUES = "heads_up_stoplist_values";
-        /** @hide */
-        private static final Validator HEADS_UP_STOPLIST_VALUES_VALIDATOR =
-                ANY_STRING_VALIDATOR;
-
-        /**
-
-        /**
-          * Statusbar Battery %
-          * 0: Hide the battery percentage
-          * 1: Display the battery percentage
-          * 2: Display the battery percentage only while charging
-          * @hide
-          */
-        public static final String STATUS_BAR_SHOW_BATTERY_PERCENT = "status_bar_show_battery_percent";
-
-        /**
-         * Whether to disable showing arrows in network traffic indicators
-         * @hide
-         */
-        public static final String NETWORK_TRAFFIC_HIDEARROW = "network_traffic_hidearrow";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
