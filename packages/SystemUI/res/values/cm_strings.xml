@@ -128,4 +128,7 @@
 
     <!-- Notify use that they are in Lock-to-app (for devices without navbar)-->
     <string name="screen_pinning_toast_no_navbar">To unpin this screen, touch &amp; hold Back button</string>
+
+    <!-- Hint for custom lockscreen shortcuts -->
+    <string name="custom_swipe_hint">Swipe from icon for <xliff:g name="target">%s</xliff:g></string>
 </resources>
