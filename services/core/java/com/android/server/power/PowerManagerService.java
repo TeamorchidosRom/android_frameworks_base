@@ -1902,7 +1902,7 @@ public final class PowerManagerService extends SystemService
                             && BatteryManager.isPlugWired(mPlugType)) {
                         mNotifier.onWiredChargingStarted(mForegroundProfile);
                     } else if (wasPowered && !mIsPowered && !dockedOnWirelessCharger) {
-                        mNotifier.onWiredChargingDisconnected(mForegroundProfile);
+                        mNotifier.onWiredChargingStarted(mForegroundProfile,mBatteryLevel);
                     } else if (dockedOnWirelessCharger) {
                         mNotifier.onWirelessChargingStarted(mBatteryLevel, mForegroundProfile);
                     }
