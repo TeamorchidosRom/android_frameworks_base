@@ -54,7 +54,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowInsets;
 import android.view.accessibility.AccessibilityManager;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.android.internal.annotations.VisibleForTesting;
 import com.android.internal.logging.MetricsLogger;
@@ -238,6 +242,11 @@ public class NotificationPanelView extends PanelView implements
     protected FrameLayout mQsFrame;
     @VisibleForTesting
     protected KeyguardStatusView mKeyguardStatusView;
+    private ImageView mDismissAllButton;
+    private Animation mDismissShowAnim;
+    private Animation mDismissHideAnim;
+    private boolean mDismissAllShowing;
+    private boolean mNotificatonClicked;
     protected NotificationsQuickSettingsContainer mNotificationContainerParent;
     protected NotificationStackScrollLayout mNotificationStackScroller;
     private boolean mAnimateNextPositionUpdate;
@@ -540,6 +549,7 @@ public class NotificationPanelView extends PanelView implements
         mNotificationStackScroller.setOnEmptySpaceClickListener(this);
         addTrackingHeadsUpListener(mNotificationStackScroller::setTrackingHeadsUp);
         mKeyguardBottomArea = findViewById(R.id.keyguard_bottom_area);
+        mDismissAllButton = findViewById(R.id.clear_notifications);
         mLastOrientation = getResources().getConfiguration().orientation;
 
         initBottomArea();
@@ -562,6 +572,35 @@ public class NotificationPanelView extends PanelView implements
                 }
             }
         });
+
+        mDismissHideAnim = AnimationUtils.loadAnimation(mContext,
+                R.anim.dismiss_all_hide);
+        mDismissShowAnim = AnimationUtils.loadAnimation(mContext,
+                R.anim.dismiss_all_show);
+
+        mDismissAllButton.setVisibility(View.INVISIBLE);
+        mDismissHideAnim.setAnimationListener(new AnimationListener() {
+            public void onAnimationStart(Animation animation) {}
+
+            public void onAnimationEnd(Animation animation) {
+                mDismissAllButton.setVisibility(View.INVISIBLE);
+                mDismissAllButton.setAlpha(0f);
+                mDismissAllShowing = false;
+            }
+
+            public void onAnimationRepeat(Animation animation) {}
+        });
+        mDismissShowAnim.setAnimationListener(new AnimationListener() {
+            public void onAnimationStart(Animation animation) {
+                mDismissAllButton.setVisibility(View.VISIBLE);
+                mDismissAllButton.setAlpha(1f);
+                mDismissAllShowing = true;
+            }
+
+            public void onAnimationEnd(Animation animation) {}
+
+            public void onAnimationRepeat(Animation animation) {}
+        });
     }
 
     @Override
@@ -577,6 +616,10 @@ public class NotificationPanelView extends PanelView implements
         // Theme might have changed between inflating this view and attaching it to the window, so
         // force a call to onThemeChanged
         onThemeChanged();
+        mDismissAllButton.setOnClickListener(v -> {
+            clearNotificationEffects();
+            mNotificationStackScroller.clearNotifications(ROWS_ALL, true /* closeShade */);
+        });
     }
 
     @Override
@@ -674,13 +717,19 @@ public class NotificationPanelView extends PanelView implements
             return;
         }
         mThemeResId = themeResId;
-
+        updateDismissAllButton();
         reInflateViews();
     }
 
     @Override
     public void onOverlayChanged() {
         reInflateViews();
+        updateDismissAllButton();
+    }
+
+    @Override
+    public void onUiModeChanged() {
+        updateDismissAllButton();
     }
 
     private void reInflateViews() {
@@ -1872,6 +1921,7 @@ public class NotificationPanelView extends PanelView implements
             updateKeyguardBottomAreaAlpha();
             updateBigClockAlpha();
         }
+        handleDismissAllVisibility();
 
         if (mAccessibilityManager.isEnabled()) {
             setAccessibilityPaneTitle(determineAccessibilityPaneTitle());
@@ -2189,6 +2239,7 @@ public class NotificationPanelView extends PanelView implements
         updateNotificationTranslucency();
         updatePanelExpanded();
         updateGestureExclusionRect();
+        handleDismissAllVisibility();
         if (DEBUG) {
             invalidate();
         }
@@ -3578,4 +3629,63 @@ public class NotificationPanelView extends PanelView implements
         mOnReinflationListener = onReinflationListener;
     }
 
+    public void onNotificationClick() {
+        mNotificatonClicked = true;
+        hideDismissAnimate();
+    }
+
+    private void updateDismissAllButton() {
+        mDismissAllButton.setBackgroundDrawable(null);
+        mDismissAllButton.setImageDrawable(null);
+        mDismissAllButton.setImageResource(R.drawable.dismiss_all_icon);
+        mDismissAllButton.setBackgroundResource(R.drawable.floating_action_button);
+    }
+
+    private void handleDismissAllVisibility() {
+        if (!mPanelExpanded && mDismissAllShowing) {
+            mDismissHideAnim.cancel();
+            mDismissHideAnim.reset();
+            return;
+        }
+        if (mNotificatonClicked) {
+            if (!mPanelExpanded) {
+                mNotificatonClicked = false;
+            } else {
+                return;
+            }
+        }
+        
+        final float panelFrac = getExpandedFraction();
+        final float qsFrac = getQsExpansionFraction();
+        if (mBarState == StatusBarState.SHADE && panelFrac > 0.9f && qsFrac < 0.3f
+                && hasActiveClearableNotifications()) {
+            showDismissAnimate();
+        } else {
+            hideDismissAnimate();
+        }
+    }
+
+    private void hideDismissAnimate() {
+        if (mDismissAllShowing) {
+            if (mDismissHideAnim.hasStarted() && !mDismissHideAnim.hasEnded()) {
+                return;
+            }
+            if (mDismissShowAnim != null) {
+                mDismissShowAnim.cancel();
+            }
+            mDismissAllButton.startAnimation(mDismissHideAnim);
+        }
+    }
+
+    private void showDismissAnimate() {
+        if (!mDismissAllShowing) {
+            if (mDismissShowAnim.hasStarted() && !mDismissShowAnim.hasEnded()) {
+                return;
+            }
+            if (mDismissHideAnim != null) {
+                mDismissHideAnim.cancel();
+            }
+            mDismissAllButton.startAnimation(mDismissShowAnim);
+        }
+    }
 }
