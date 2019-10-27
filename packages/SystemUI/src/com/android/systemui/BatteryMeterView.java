@@ -18,7 +18,6 @@ package com.android.systemui;
 import static android.app.StatusBarManager.DISABLE2_SYSTEM_ICONS;
 import static android.app.StatusBarManager.DISABLE_NONE;
 
-
 import static com.android.settingslib.graph.BatteryMeterDrawableBase.BATTERY_STYLE_PORTRAIT;
 import static com.android.settingslib.graph.BatteryMeterDrawableBase.BATTERY_STYLE_CIRCLE;
 import static com.android.settingslib.graph.BatteryMeterDrawableBase.BATTERY_STYLE_DOTTED_CIRCLE;
@@ -106,9 +105,6 @@ public class BatteryMeterView extends LinearLayout implements
     private boolean mCharging;
     public int mBatteryStyle = BATTERY_STYLE_PORTRAIT;
     public int mShowBatteryPercent;
-
-    private boolean mBatteryHidden;
-    private int mBatteryStyle = BATTERY_STYLE_PORTRAIT;
 
     private DualToneHandler mDualToneHandler;
     private int mUser;
