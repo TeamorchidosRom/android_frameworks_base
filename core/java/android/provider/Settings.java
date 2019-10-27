@@ -4508,35 +4508,6 @@ public final class Settings {
          */
         public static final String SHOW_BATTERY_PERCENT = "dummy_show_battery_percent";
 
-        /** Whether to show ambient or lockscreen if AoD is disabled
-         * and we do a wake gesture like lift to wake or double tap
-         *
-         * @hide
-         */
-        public static final String AMBIENT_WAKE_GESTURES = "ambient_wake_gestures";
-
-        /** @hide */
-        public static final String BACK_GESTURE_HEIGHT = "back_gesture_height";
-
-        /** @hide */
-        private static final Validator BACK_GESTURE_HEIGHT_VALIDATOR =
-                ANY_INTEGER_VALIDATOR;
-
-        /** @hide */
-        public static final String BACK_GESTURE_BLOCK_IME = "back_gesture_block_ime";
-
-        /** @hide */
-        private static final Validator BACK_GESTURE_BLOCK_IME_VALIDATOR =
-                BOOLEAN_VALIDATOR;
-
-        /**
-         * Whether to show arrow keys in navigation bar
-         * @hide
-         */
-        public static final String NAVIGATION_BAR_ARROW_KEYS = "navigation_bar_menu_arrow_keys";
-
-        private static final Validator NAVIGATION_BAR_ARROW_KEYS_VALIDATOR =
-                BOOLEAN_VALIDATOR;
 
         /**
          * IMPORTANT: If you add a new public settings you also have to add it to
@@ -4912,119 +4883,18 @@ public final class Settings {
                 ANY_STRING_VALIDATOR;
 
         /**
-         * Which applications to disable heads up notifications for
-         *
+
+         * Battery style
          * @hide
-         */
-        public static final String HEADS_UP_BLACKLIST_VALUES = "heads_up_blacklist_values";
-        /** @hide */
-        private static final Validator HEADS_UP_BLACKLIST_VALUES_VALIDATOR =
-                ANY_STRING_VALIDATOR;
-
-       /**
-        * Defines the global heads up notification snooze
-        * @hide
-        */
-        public static final String HEADS_UP_NOTIFICATION_SNOOZE = "heads_up_notification_snooze";
-
-        /** @hide */
-        private static final Validator HEADS_UP_NOTIFICATION_SNOOZE_VALIDATOR =
-              new SettingsValidators.InclusiveIntegerRangeValidator(0, 1200000);
 
         /**
-         * One of the sip call options: Always use SIP with network access.
-         * @hide
-         */
-
-        /** @hide */
-
-        /**
-         * One of the sip call options: Only if destination is a SIP address.
-         * @hide
-         */
-
-        /** @hide */
-
-        /**
-         * @deprecated Use SIP_ALWAYS or SIP_ADDRESS_ONLY instead.  Formerly used to indicate that
-         * the user should be prompted each time a call is made whether it should be placed using
-         * SIP.  The {@link com.android.providers.settings.DatabaseHelper} replaces this with
-         * SIP_ADDRESS_ONLY.
-         * @hide
-         */
-
-        /** @hide */
-
-        /**
-         * Pointer speed setting.
-         * This is an integer value in a range between -7 and +7, so there are 15 possible values.
-         *   -7 = slowest
-         *    0 = default speed
-         *   +7 = fastest
-         * @hide
-         */
-
-        /** @hide */
-        /**
-         * Whether lock-to-app will be triggered by long-press on recents.
-         * @hide
-         */
-        /** @hide */
-
-        /**
-         * Enable/Disable screenshot sound
-         * @hide
-         */
-        public static final String SCREENSHOT_SOUND = "screenshot_sound";
-
-        /**
-         * I am the lolrus.
-         * <p>
-         * Nonzero values indicate that the user has a bukkit.
-         * Backward-compatible with <code>PrefGetPreference(prefAllowEasterEggs)</code>.
-         * @hide
-         */
-        /** @hide */
-        /**
-         * Setting to determine whether or not to show the battery percentage in the status bar.
-         *    0 - Don't show percentage
-         *    1 - Show percentage
-         * @hide
-         */
-        /** @hide */
-        private static final Validator SHOW_BATTERY_PERCENT_VALIDATOR = BOOLEAN_VALIDATOR;
-
-        /**
-         * IMPORTANT: If you add a new public settings you also have to add it to
-         * PUBLIC_SETTINGS below. If the new setting is hidden you have to add
-         * it to PRIVATE_SETTINGS below. Also add a validator that can validate
-         * the setting value. See an example above.
-         */
-
-        /**
-          * Volume keys control cursor in text fields (default is 0)
-          * 0 - Disabled
-          * 1 - Volume up/down moves cursor left/right
-          * 2 - Volume up/down moves cursor right/left
+          * Statusbar Battery %
+          * 0: Hide the battery percentage
+          * 1: Display the battery percentage
+          * 2: Display the battery percentage only while charging
           * @hide
           */
-        public static final String VOLUME_KEY_CURSOR_CONTROL = "volume_key_cursor_control";
-
-        /**
-	/**
-         * Number of qs columns on landscape orientation
-         * @hide
-         */
-         /** @hide */
-        private static final Validator QS_LAYOUT_COLUMNS_LANDSCAPE_VALIDATOR =
-                ANY_INTEGER_VALIDATOR;
-
-         /**
-         * @hide
-         */
-         /** @hide */
-        private static final Validator QS_LAYOUT_COLUMNS_VALIDATOR =
-                ANY_INTEGER_VALIDATOR;
+        public static final String STATUS_BAR_SHOW_BATTERY_PERCENT = "status_bar_show_battery_percent";
 
         /**
          * Settings to backup. This is here so that it's in the same place as the settings
@@ -5084,7 +4954,6 @@ public final class Settings {
             LOCK_TO_APP_ENABLED,
             NOTIFICATION_SOUND,
             ACCELEROMETER_ROTATION,
-            SHOW_BATTERY_PERCENT,
             NOTIFICATION_VIBRATION_INTENSITY,
             RING_VIBRATION_INTENSITY,
             HAPTIC_FEEDBACK_INTENSITY,
@@ -5210,7 +5079,6 @@ public final class Settings {
             PRIVATE_SETTINGS.add(POINTER_SPEED);
             PRIVATE_SETTINGS.add(LOCK_TO_APP_ENABLED);
             PRIVATE_SETTINGS.add(EGG_MODE);
-            PRIVATE_SETTINGS.add(SHOW_BATTERY_PERCENT);
             PRIVATE_SETTINGS.add(DISPLAY_COLOR_MODE);
             PRIVATE_SETTINGS.add(QS_LAYOUT_COLUMNS_LANDSCAPE);
             PRIVATE_SETTINGS.add(QS_LAYOUT_COLUMNS);
@@ -5305,7 +5173,6 @@ public final class Settings {
             VALIDATORS.put(WIFI_STATIC_NETMASK, WIFI_STATIC_NETMASK_VALIDATOR);
             VALIDATORS.put(WIFI_STATIC_DNS1, WIFI_STATIC_DNS1_VALIDATOR);
             VALIDATORS.put(WIFI_STATIC_DNS2, WIFI_STATIC_DNS2_VALIDATOR);
-            VALIDATORS.put(SHOW_BATTERY_PERCENT, SHOW_BATTERY_PERCENT_VALIDATOR);
             VALIDATORS.put(NOTIFICATION_LIGHT_PULSE, BOOLEAN_VALIDATOR);
             VALIDATORS.put(QS_LAYOUT_COLUMNS_LANDSCAPE,
                     QS_LAYOUT_COLUMNS_LANDSCAPE_VALIDATOR);
