@@ -274,8 +274,7 @@ public class RecordingService extends Service {
             mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.MPEG_4);
 
             // Set up video
-            DisplayMetrics metrics = new DisplayMetrics();
-            mWindowManager.getDefaultDisplay().getRealMetrics(metrics);
+            DisplayMetrics metrics = getResources().getDisplayMetrics();
             int screenWidth = metrics.widthPixels;
             int screenHeight = metrics.heightPixels;
             mMediaRecorder.setVideoEncoder(MediaRecorder.VideoEncoder.HEVC);
