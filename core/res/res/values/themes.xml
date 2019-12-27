@@ -114,7 +114,7 @@ please see themes_device_defaults.xml.
         <item name="buttonStyleInset">@style/Widget.Button.Inset</item>
 
         <item name="buttonStyleToggle">@style/Widget.Button.Toggle</item>
-        <item name="buttonCornerRadius">0dp</item>
+        <item name="buttonCornerRadius">4dp</item>
 
         <item name="switchStyle">@style/Widget.CompoundButton.Switch</item>
         <item name="mediaRouteButtonStyle">@style/Widget.DeviceDefault.MediaRouteButton</item>
@@ -204,7 +204,7 @@ please see themes_device_defaults.xml.
         <item name="dialogCustomTitleDecorLayout">@layout/dialog_custom_title</item>
         <item name="dialogTitleDecorLayout">@layout/dialog_title</item>
         <item name="dialogPreferredPadding">@dimen/dialog_padding</item>
-        <item name="dialogCornerRadius">0dp</item>
+        <item name="dialogCornerRadius">4dp</item>
 
         <!-- AlertDialog attributes -->
         <item name="alertDialogTheme">@style/Theme.Dialog.Alert</item>
