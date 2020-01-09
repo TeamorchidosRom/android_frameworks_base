@@ -744,9 +744,6 @@ public final class DefaultPermissionGrantPolicy {
             grantPermissionsToSystemPackage(systemCaptionsServicePackageName, userId,
                     MICROPHONE_PERMISSIONS);
         }
-        // WarpShare
-        grantSystemFixedPermissionsToSystemPackage("org.mokee.warpshare", userId,
-                STORAGE_PERMISSIONS);
     }
 
     private String getDefaultSystemHandlerActivityPackageForCategory(String category, int userId) {
