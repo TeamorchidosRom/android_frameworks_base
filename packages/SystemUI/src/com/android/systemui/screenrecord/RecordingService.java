@@ -36,7 +36,6 @@ import android.media.MediaRecorder;
 import android.media.projection.MediaProjection;
 import android.media.projection.MediaProjectionManager;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.IBinder;
 import android.os.Handler;
 import android.os.Looper;
@@ -328,14 +327,11 @@ public class RecordingService extends Service {
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.createNotificationChannel(channel);
 
-        final Bundle extras = new Bundle();
-        extras.putString(Notification.EXTRA_SUBSTITUTE_APP_NAME, this.getString(R.string.global_action_screenrecord));
         mRecordingNotificationBuilder = new Notification.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_screenrecord)
                 .setContentTitle(getResources().getString(R.string.screenrecord_name))
                 .setUsesChronometer(true)
-                .setOngoing(true)
-                .addExtras(extras);
+                .setOngoing(true);
         setNotificationActions(false, notificationManager);
         Notification notification = mRecordingNotificationBuilder.build();
         startForeground(NOTIFICATION_ID, notification);
@@ -393,8 +389,6 @@ public class RecordingService extends Service {
                         PendingIntent.FLAG_UPDATE_CURRENT))
                 .build();
 
-        final Bundle extras = new Bundle();
-        extras.putString(Notification.EXTRA_SUBSTITUTE_APP_NAME, this.getString(R.string.global_action_screenrecord));
         Notification.Builder builder = new Notification.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_screenrecord)
                 .setContentTitle(getResources().getString(R.string.screenrecord_name))
@@ -406,8 +400,7 @@ public class RecordingService extends Service {
                         Intent.FLAG_GRANT_READ_URI_PERMISSION))
                 .addAction(shareAction)
                 .addAction(deleteAction)
-                .setAutoCancel(true)
-                .addExtras(extras);
+                .setAutoCancel(true);
 
         // Add thumbnail if available
         Bitmap thumbnailBitmap = null;
