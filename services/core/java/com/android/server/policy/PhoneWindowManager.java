@@ -6075,7 +6075,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case HapticFeedbackConstants.EDGE_SQUEEZE:
                 return VibrationEffect.get(VibrationEffect.EFFECT_HEAVY_CLICK);
             case HapticFeedbackConstants.REJECT:
-                return VibrationEffect.get(VibrationEffect.EFFECT_THUD);
+                return VibrationEffect.get(VibrationEffect.EFFECT_DOUBLE_CLICK);
 
             case HapticFeedbackConstants.CALENDAR_DATE:
                 pattern = mCalendarDateVibePattern;
