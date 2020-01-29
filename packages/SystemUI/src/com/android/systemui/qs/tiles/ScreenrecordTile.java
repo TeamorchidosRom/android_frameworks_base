@@ -23,7 +23,6 @@ import android.provider.Settings;
 import android.service.quicksettings.Tile;
 import android.view.WindowManager;
 
-import com.android.internal.util.ScreenRecordHelper;
 import com.android.internal.util.omni.OmniUtils;
 import com.android.internal.util.omni.PackageUtils;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
@@ -36,6 +35,8 @@ import javax.inject.Inject;
 
 /** Quick settings tile: Screenrecord **/
 public class ScreenrecordTile extends QSTileImpl<BooleanState> {
+
+    private static final String OMNIRECORD_PACKAGE_NAME = "org.omnirom.omnirecord";
 
     @Inject
     public ScreenrecordTile(QSHost host) {
@@ -57,19 +58,21 @@ public class ScreenrecordTile extends QSTileImpl<BooleanState> {
 
     @Override
     public boolean isAvailable() {
-        return true;
+        return PackageUtils.isAvailableApp(OMNIRECORD_PACKAGE_NAME, mContext);
     }
 
     @Override
     public void handleClick() {
         mHost.collapsePanels();
-        ScreenRecordHelper screenRecordHelper = new ScreenRecordHelper(mContext);
-        screenRecordHelper.launchRecordPrompt();
+        final Intent intent = new Intent(OMNIRECORD_PACKAGE_NAME + ".ACTION_START");
+        intent.setPackage(OMNIRECORD_PACKAGE_NAME);
+        mContext.sendBroadcastAsUser(intent, UserHandle.CURRENT);
     }
 
     @Override
     public Intent getLongClickIntent() {
-        return null;
+        return new Intent(Intent.ACTION_MAIN).setClassName(OMNIRECORD_PACKAGE_NAME,
+                OMNIRECORD_PACKAGE_NAME + ".SettingsActivity");
     }
 
     @Override
