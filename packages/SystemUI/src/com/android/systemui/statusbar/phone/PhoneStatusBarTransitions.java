@@ -45,7 +45,6 @@ public final class PhoneStatusBarTransitions extends BarTransitions {
     public void init() {
         mLeftSide = mView.findViewById(R.id.status_bar_left_side);
         mStatusIcons = mView.findViewById(R.id.statusIcons);
-        mNetworkTraffic = mView.findViewById(R.id.network_traffic);
         mBattery = mView.findViewById(R.id.battery);
         applyModeBackground(-1, getMode(), false /*animate*/);
         applyMode(getMode(), false /*animate*/);
