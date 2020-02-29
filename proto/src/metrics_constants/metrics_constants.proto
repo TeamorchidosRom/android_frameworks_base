@@ -7432,5 +7432,8 @@ message MetricsEvent {
 
     // Extra Settings
     EXTRA_SETTINGS = 10000;
+    // Panel for Bluetooth
+    PANEL_BLUETOOTH = 9004;
+
   }
 }
