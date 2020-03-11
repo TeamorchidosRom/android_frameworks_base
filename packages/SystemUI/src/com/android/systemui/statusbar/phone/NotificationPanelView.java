@@ -237,7 +237,6 @@ public class NotificationPanelView extends PanelView implements
     protected FrameLayout mQsFrame;
     @VisibleForTesting
     protected KeyguardStatusView mKeyguardStatusView;
-    private View mQsNavbarScrim;
     protected NotificationsQuickSettingsContainer mNotificationContainerParent;
     protected NotificationStackScrollLayout mNotificationStackScroller;
     private boolean mAnimateNextPositionUpdate;
@@ -540,7 +539,6 @@ public class NotificationPanelView extends PanelView implements
         mNotificationStackScroller.setOnEmptySpaceClickListener(this);
         addTrackingHeadsUpListener(mNotificationStackScroller::setTrackingHeadsUp);
         mKeyguardBottomArea = findViewById(R.id.keyguard_bottom_area);
-        mQsNavbarScrim = findViewById(R.id.qs_navbar_scrim);
         mLastOrientation = getResources().getConfiguration().orientation;
 
         initBottomArea();
@@ -1848,10 +1846,6 @@ public class NotificationPanelView extends PanelView implements
                 mBarState != StatusBarState.KEYGUARD && (!mQsExpanded
                         || mQsExpansionFromOverscroll));
         updateEmptyShadeView();
-        mQsNavbarScrim.setVisibility(mBarState == StatusBarState.SHADE && mQsExpanded
-                && !mStackScrollerOverscrolling && mQsScrimEnabled
-                ? View.VISIBLE
-                : View.INVISIBLE);
         if (mKeyguardUserSwitcher != null && mQsExpanded && !mStackScrollerOverscrolling) {
             mKeyguardUserSwitcher.hideIfNotSimple(true /* animate */);
         }
@@ -1876,10 +1870,6 @@ public class NotificationPanelView extends PanelView implements
                 || mBarState == StatusBarState.KEYGUARD) {
             updateKeyguardBottomAreaAlpha();
             updateBigClockAlpha();
-        }
-        if (mBarState == StatusBarState.SHADE && mQsExpanded
-                && !mStackScrollerOverscrolling && mQsScrimEnabled) {
-            mQsNavbarScrim.setAlpha(getQsExpansionFraction());
         }
 
         if (mAccessibilityManager.isEnabled()) {
