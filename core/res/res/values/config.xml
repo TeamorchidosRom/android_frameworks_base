@@ -2857,7 +2857,6 @@
          "power" = Power off
          "settings" = An action to launch settings
          "airplane" = Airplane mode toggle
-         "bugreport" = Take bug report, if available
          "silent" = silent mode
          "users" = list of users
          "restart" = restart device
@@ -2870,7 +2869,6 @@
         <item>restart</item>
         <item>lockdown</item>
         <item>logout</item>
-        <item>bugreport</item>
         <item>screenshot</item>
         <item>emergency</item>
         <item>screenrecord</item>

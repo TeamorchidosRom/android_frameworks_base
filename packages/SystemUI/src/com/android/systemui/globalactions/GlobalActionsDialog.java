@@ -410,11 +410,6 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
                 continue;
             } else if (GLOBAL_ACTION_KEY_AIRPLANE.equals(actionKey)) {
                 mItems.add(mAirplaneModeOn);
-            } else if (GLOBAL_ACTION_KEY_BUGREPORT.equals(actionKey)) {
-                if (Settings.Global.getInt(mContext.getContentResolver(),
-                        Settings.Global.BUGREPORT_IN_POWER_MENU, 0) != 0 && isCurrentUserOwner()) {
-                    mItems.add(new BugReportAction());
-                }
             } else if (GLOBAL_ACTION_KEY_SILENT.equals(actionKey)) {
                 if (mShowSilentToggle) {
                     mItems.add(mSilentModeAction);
@@ -847,64 +842,6 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
 
         @Override
         public boolean onLongPress() {
-            return false;
-        }
-    }
-
-    private class BugReportAction extends SinglePressAction implements LongPressAction {
-
-        public BugReportAction() {
-            super(R.drawable.ic_lock_bugreport, R.string.bugreport_title);
-        }
-
-        @Override
-        public void onPress() {
-            // don't actually trigger the bugreport if we are running stability
-            // tests via monkey
-            if (ActivityManager.isUserAMonkey()) {
-                return;
-            }
-            // Add a little delay before executing, to give the
-            // dialog a chance to go away before it takes a
-            // screenshot.
-            mHandler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        // Take an "interactive" bugreport.
-                        MetricsLogger.action(mContext,
-                                MetricsEvent.ACTION_BUGREPORT_FROM_POWER_MENU_INTERACTIVE);
-                        ActivityManager.getService().requestBugReport(
-                                ActivityManager.BUGREPORT_OPTION_INTERACTIVE);
-                    } catch (RemoteException e) {
-                    }
-                }
-            }, 500);
-        }
-
-        @Override
-        public boolean onLongPress() {
-            // don't actually trigger the bugreport if we are running stability
-            // tests via monkey
-            if (ActivityManager.isUserAMonkey()) {
-                return false;
-            }
-            try {
-                // Take a "full" bugreport.
-                MetricsLogger.action(mContext, MetricsEvent.ACTION_BUGREPORT_FROM_POWER_MENU_FULL);
-                ActivityManager.getService().requestBugReport(
-                        ActivityManager.BUGREPORT_OPTION_FULL);
-            } catch (RemoteException e) {
-            }
-            return false;
-        }
-
-        public boolean showDuringKeyguard() {
-            return true;
-        }
-
-        @Override
-        public boolean showBeforeProvisioning() {
             return false;
         }
     }
