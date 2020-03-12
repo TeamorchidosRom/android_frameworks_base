@@ -24,13 +24,13 @@ import android.service.quicksettings.Tile;
 import android.view.WindowManager;
 
 import com.android.internal.util.ScreenRecordHelper;
+import com.android.internal.util.omni.OmniUtils;
+import com.android.internal.util.omni.PackageUtils;
 import com.android.internal.logging.nano.MetricsProto.MetricsEvent;
 import com.android.systemui.qs.QSHost;
 import com.android.systemui.plugins.qs.QSTile.BooleanState;
 import com.android.systemui.qs.tileimpl.QSTileImpl;
 import com.android.systemui.R;
-
-import org.lineageos.internal.logging.LineageMetricsLogger;
 
 import javax.inject.Inject;
 
@@ -44,7 +44,7 @@ public class ScreenrecordTile extends QSTileImpl<BooleanState> {
 
     @Override
     public int getMetricsCategory() {
-        return LineageMetricsLogger.TILE_CUSTOM_QS;
+        return MetricsEvent.CUSTOM_QUICK_TILES;
     }
 
     @Override
