@@ -88,11 +88,10 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
     private SimpleDateFormat mContentDescriptionFormat;
     private Locale mLocale;
 
-    private static final int AM_PM_STYLE_NORMAL  = 0;
-    private static final int AM_PM_STYLE_SMALL   = 1;
-    private static final int AM_PM_STYLE_GONE    = 2;
+    private static final int AM_PM_STYLE_GONE  = 1;
+    private static final int AM_PM_STYLE_NORMAL    = 0;
 
-    private int mAmPmStyle = AM_PM_STYLE_GONE;
+    private int mAmPmStyle = AM_PM_STYLE_NORMAL;
     private final boolean mShowDark;
     private boolean mShowSeconds;
     private Handler mSecondsHandler;
@@ -433,11 +432,6 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
                 if (mAmPmStyle == AM_PM_STYLE_GONE) {
                     formatted.delete(magic1, magic2+1);
                 } else {
-                    if (mAmPmStyle == AM_PM_STYLE_SMALL) {
-                        CharacterStyle style = new RelativeSizeSpan(0.7f);
-                        formatted.setSpan(style, magic1, magic2,
-                                          Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-                    }
                     formatted.delete(magic2, magic2 + 1);
                     formatted.delete(magic1, magic1 + 1);
                 }
@@ -506,4 +500,3 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
         }
     };
 }
-
