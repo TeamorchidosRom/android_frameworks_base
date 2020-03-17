@@ -242,7 +242,6 @@ import dalvik.system.PathClassLoader;
 import lineageos.hardware.LineageHardwareManager;
 import lineageos.providers.LineageSettings;
 
-import org.lineageos.internal.buttons.LineageButtons;
 import org.lineageos.internal.util.ActionUtils;
 
 import java.io.File;
@@ -534,7 +533,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     boolean mAssistWakeScreen;
     boolean mAppSwitchWakeScreen;
     boolean mCameraWakeScreen;
-    boolean mVolumeWakeScreen;
 
     // Camera button control flags and actions
     boolean mCameraLaunch;
@@ -693,8 +691,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
     private int mPowerButtonSuppressionDelayMillis = POWER_BUTTON_SUPPRESSION_DELAY_DEFAULT_MILLIS;
 
     private final List<DeviceKeyHandler> mDeviceKeyHandlers = new ArrayList<>();
-
-    private LineageButtons mLineageButtons;
 
     private static final int MSG_DISPATCH_MEDIA_KEY_WITH_WAKE_LOCK = 3;
     private static final int MSG_DISPATCH_MEDIA_KEY_REPEAT_WITH_WAKE_LOCK = 4;
@@ -2431,9 +2427,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             mAppSwitchWakeScreen = (LineageSettings.System.getIntForUser(resolver,
                     LineageSettings.System.APP_SWITCH_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1)
                     && ((mDeviceHardwareWakeKeys & KEY_MASK_APP_SWITCH) != 0);
-            mVolumeWakeScreen = (LineageSettings.System.getIntForUser(resolver,
-                    LineageSettings.System.VOLUME_WAKE_SCREEN, 0, UserHandle.USER_CURRENT) == 1)
-                    && ((mDeviceHardwareWakeKeys & KEY_MASK_VOLUME) != 0);
             mVolumeAnswerCall = (LineageSettings.System.getIntForUser(resolver,
                     LineageSettings.System.VOLUME_ANSWER_CALL, 0, UserHandle.USER_CURRENT) == 1)
                     && ((mDeviceHardwareWakeKeys & KEY_MASK_VOLUME) != 0);
@@ -4358,17 +4351,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_MUTE: {
-                // Eat all down & up keys when using volume wake.
-                // This disables volume control, music control, and "beep" on key up.
-                if (isWakeKey && mVolumeWakeScreen) {
-                    setVolumeWakeTriggered(keyCode, true);
-                    break;
-                } else if (getVolumeWakeTriggered(keyCode) && !down) {
-                    result &= ~ACTION_PASS_TO_USER;
-                    setVolumeWakeTriggered(keyCode, false);
-                    break;
-                }
-
                 if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
                     if (down) {
                         // Any activity on the vol down button stops the ringer toggle shortcut
@@ -4465,11 +4447,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
                     // Defer special key handlings to
                     // {@link interceptKeyBeforeDispatching()}.
                     result |= ACTION_PASS_TO_USER;
-                } else if ((result & ACTION_PASS_TO_USER) == 0 && !mVolumeWakeScreen) {
-                    if (mLineageButtons.handleVolumeKey(event, interactive)) {
-                        break;
-                    }
-
+                } else if ((result & ACTION_PASS_TO_USER) == 0) {
                     // If we aren't passing to the user and no one else
                     // handled it send it to the session manager to
                     // figure out.
@@ -4841,8 +4819,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_VOLUME_MUTE:
                 // Volume keys are still wake keys if the device is docked.
-                return mVolumeWakeScreen ||
-                        mDefaultDisplayPolicy.getDockMode() != Intent.EXTRA_DOCK_STATE_UNDOCKED;
+                return mDefaultDisplayPolicy.getDockMode() != Intent.EXTRA_DOCK_STATE_UNDOCKED;
             case KeyEvent.KEYCODE_BACK:
                 return mBackWakeScreen;
             case KeyEvent.KEYCODE_MENU:
@@ -4871,8 +4848,7 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             case KeyEvent.KEYCODE_VOLUME_UP:
             case KeyEvent.KEYCODE_VOLUME_DOWN:
             case KeyEvent.KEYCODE_VOLUME_MUTE:
-                return mVolumeWakeScreen ||
-                        mDefaultDisplayPolicy.getDockMode() != Intent.EXTRA_DOCK_STATE_UNDOCKED;
+                return mDefaultDisplayPolicy.getDockMode() != Intent.EXTRA_DOCK_STATE_UNDOCKED;
 
             // ignore media keys
             case KeyEvent.KEYCODE_MUTE:
@@ -5605,7 +5581,6 @@ public class PhoneWindowManager implements WindowManagerPolicy {
             }
         }
 
-        mLineageButtons = new LineageButtons(mContext);
 
         mAutofillManagerInternal = LocalServices.getService(AutofillManagerInternal.class);
     }
