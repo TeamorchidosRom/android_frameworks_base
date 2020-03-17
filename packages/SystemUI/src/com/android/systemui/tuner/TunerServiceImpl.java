@@ -81,7 +81,6 @@ public class TunerServiceImpl extends TunerService {
             Settings.Secure.DOZE_ALWAYS_ON,
             StatusBar.FORCE_SHOW_NAVBAR,
             StatusBar.SCREEN_BRIGHTNESS_MODE,
-            StatusBar.STATUS_BAR_BRIGHTNESS_CONTROL,
             VolumeDialogImpl.SETTING_VOLUME_PANEL_ON_LEFT,
     };
 
