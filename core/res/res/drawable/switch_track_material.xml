@@ -22,12 +22,12 @@
                   android:start="4dp"
                   android:end="4dp">
                 <shape android:shape="rectangle" >
-                    <size android:height="28dp" android:width="10dp" />
-                    <corners android:radius="14dp" />
+                    <size android:height="14dp" android:width="5dp" />
+                    <corners android:radius="7dp" />
 	                <gravity android:gravity="center_vertical" />
                     <solid android:color="@android:color/transparent" />
                     <stroke
-                        android:width="8dp"
+                        android:width="2dp"
                         android:color="@color/switch_track_material"/>
                 </shape>
             </item>
@@ -36,15 +36,15 @@
     <item android:state_checked="false">
         <layer-list>
             <item android:gravity="center_vertical|fill_horizontal"
-                  android:start="8dp"
+                  android:start="4dp"
                   android:end="4dp">
                 <shape android:shape="rectangle" >
-                    <size android:height="28dp" android:width="10dp" />
-                    <corners android:radius="14dp" />
+                    <size android:height="14dp" android:width="5dp" />
+                    <corners android:radius="7dp" />
 	                <gravity android:gravity="center_vertical" />
                     <solid android:color="@android:color/transparent" />
                     <stroke
-                        android:width="4dp"
+                        android:width="2dp"
                         android:color="@color/switch_track_material"/>
                 </shape>
             </item>
