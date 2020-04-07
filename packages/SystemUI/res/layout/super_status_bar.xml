@@ -51,6 +51,11 @@
         sysui:ignoreRightInset="true"
         />
 
+    <ImageView
+        android:layout_height="match_parent" />
+        android:layout_width="match_parent"
+        android:id="@+id/qs_blur"
+        android:background="#000000"
     <FrameLayout
         android:id="@+id/status_bar_container"
         android:layout_width="match_parent"
