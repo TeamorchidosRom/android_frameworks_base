@@ -530,7 +530,6 @@ public class StatusBarKeyguardViewManager implements RemoteInputController.Callb
         boolean isOccluding = !mOccluded && occluded;
         mOccluded = occluded;
         if (mShowing) {
-            mMediaManager.updateMediaMetaData(false, animate && !occluded);
         }
         mStatusBarWindowController.setKeyguardOccluded(occluded);
 
