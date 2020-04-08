@@ -70,7 +70,7 @@
 
     <!-- Width of the battery icon in the status bar. The battery drawable assumes a 12x20 canvas,
     so the width of the icon should be 13.0dp * (12.0 / 20.0) -->
-    <dimen name="status_bar_battery_icon_width">7.4dp</dimen>
+    <dimen name="status_bar_battery_icon_width">7dp</dimen>
 
     <!-- The font size for the clock in the status bar. -->
     <dimen name="status_bar_clock_size">13sp</dimen>
@@ -292,7 +292,7 @@
     <dimen name="global_screenshot_selector_border_width">4dp</dimen>
 
     <!-- The width of the partial screenshot corner resize handles -->
-    <dimen name="global_screenshot_selector_corner_width">8dp</dimen>
+    <dimen name="global_screenshot_selector_corner_width">9dp</dimen>
 
     <!-- The size of the area around a resize handle used for touch detection -->
     <dimen name="global_screenshot_selector_touch_width">30dp</dimen>
@@ -368,7 +368,7 @@
     <dimen name="qs_notification_padding">14dp</dimen>
 
     <!-- Height of the status bar header bar when expanded -->
-    <dimen name="status_bar_header_height_expanded">164dp</dimen>
+    <dimen name="status_bar_header_height_expanded">170dp</dimen>
 
     <!-- Height of the status bar header bar when on Keyguard -->
     <dimen name="status_bar_header_height_keyguard">40dp</dimen>
@@ -451,7 +451,7 @@
     <!-- The size of the gesture span needed to activate the "pull" notification expansion -->
     <dimen name="pull_span_min">25dp</dimen>
 
-    <dimen name="qs_tile_height">106dp</dimen>
+    <dimen name="qs_tile_height">102dp</dimen>
     <dimen name="qs_tile_layout_margin_side">6dp</dimen>
     <dimen name="qs_tile_margin_horizontal">18dp</dimen>
     <dimen name="qs_tile_margin_vertical">24dp</dimen>
@@ -464,7 +464,7 @@
     <dimen name="qs_customize_header_min_height">46dp</dimen>
     <dimen name="qs_tile_margin_top">32dp</dimen>
     <dimen name="qs_tile_background_size">44dp</dimen>
-    <dimen name="qs_quick_tile_size">48dp</dimen>
+    <dimen name="qs_quick_tile_size">46dp</dimen>
     <dimen name="qs_quick_tile_padding">12dp</dimen>
     <dimen name="qs_header_gear_translation">16dp</dimen>
     <dimen name="qs_header_tile_margin_horizontal">4dp</dimen>
@@ -717,7 +717,8 @@
     <!-- The top padding of the clear all button -->
     <dimen name="clear_all_padding_top">12dp</dimen>
 
-    <dimen name="notification_section_header_height">28dp</dimen>
+
+    <dimen name="notification_section_header_height">32dp</dimen>
     <dimen name="notification_section_header_padding_left">16dp</dimen>
 
     <!-- Largest size an avatar might need to be drawn in the user picker, status bar, or
@@ -984,13 +985,13 @@
     <!-- The maximum offset in either direction that icons move to prevent burn-in on AOD. -->
     <dimen name="default_burn_in_prevention_offset">15dp</dimen>
 
-    <dimen name="corner_size">8dp</dimen>
+    <dimen name="corner_size">9dp</dimen>
     <dimen name="corner_size_vol">8dp</dimen>
     <dimen name="top_padding">0dp</dimen>
     <dimen name="bottom_padding">48dp</dimen>
     <dimen name="edge_margin">8dp</dimen>
 
-    <dimen name="rounded_corner_content_padding">8dp</dimen>
+    <dimen name="rounded_corner_content_padding">9dp</dimen>
     <dimen name="nav_content_padding">0dp</dimen>
     <dimen name="nav_quick_scrub_track_edge_padding">24dp</dimen>
     <dimen name="nav_quick_scrub_track_thickness">10dp</dimen>
@@ -1181,14 +1182,14 @@
     <dimen name="config_rounded_mask_size_top">@*android:dimen/rounded_corner_radius_top</dimen>
     <dimen name="config_rounded_mask_size_bottom">@*android:dimen/rounded_corner_radius_top</dimen>
 
-    <dimen name="custom_volume_dialog_seekbar_width">40dip</dimen>
-    <dimen name="custom_volume_dialog_seekbar_height">220dip</dimen>
+    <dimen name="custom_volume_dialog_seekbar_width">38dip</dimen>
+    <dimen name="custom_volume_dialog_seekbar_height">200dip</dimen>
     <dimen name="volume_dialog_row_icon_margintop">-58dp</dimen>
     <dimen name="volume_dialog_rows_padding_right">0.5dip</dimen>
     <dimen name="volume_dialog_ringer_spacing">4dip</dimen>
-    <dimen name="volume_dialog_ringer_height">38dip</dimen>
+    <dimen name="volume_dialog_ringer_height">36dip</dimen>
 
-    <dimen name="brightnessbar_additional_margin">22dp</dimen>
+    <dimen name="brightnessbar_additional_margin">17dp</dimen>
 
     <dimen name="lockscreen_shortcuts_preview_paddingVertical">30dp</dimen>
     <dimen name="lockscreen_shortcuts_preview_paddingHorizontal">50dp</dimen>
@@ -1198,10 +1199,10 @@
     <dimen name="screenrecord_dot_size">48dp</dimen>
 
     <dimen name="dismiss_all_button_elevation">10dp</dimen>
-    <dimen name="dismiss_all_button_height">55dp</dimen>
+    <dimen name="dismiss_all_button_height">48dp</dimen>
     <dimen name="dismiss_all_button_margin_bottom">35dp</dimen>
     <dimen name="dismiss_all_button_margin_top">30dp</dimen>
-    <dimen name="dismiss_all_button_width">55dp</dimen>
+    <dimen name="dismiss_all_button_width">48dp</dimen>
     <dimen name="dismiss_all_fab_src_size">24dp</dimen>
 
     <dimen name="qs_tiles_extra_margin_top">2dp</dimen>
