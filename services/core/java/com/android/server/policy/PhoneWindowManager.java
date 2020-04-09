@@ -6541,4 +6541,31 @@ public class PhoneWindowManager implements WindowManagerPolicy {
         }
     }
 
+    /**
+     * @return Whether music is being played right now "locally" (e.g. on the device's speakers
+     *    or wired headphones) or "remotely" (e.g. on a device using the Cast protocol and
+     *    controlled by this device, or through remote submix).
+     */
+    private boolean isMusicActive() {
+        final AudioManager am = (AudioManager)mContext.getSystemService(Context.AUDIO_SERVICE);
+        if (am == null) {
+            Log.w(TAG, "isMusicActive: couldn't get AudioManager reference");
+            return false;
+        }
+        return am.isMusicActive();
+    }
+
+    private void scheduleLongPressKeyEvent(KeyEvent origEvent, int keyCode) {
+        KeyEvent event = new KeyEvent(origEvent.getDownTime(), origEvent.getEventTime(),
+                origEvent.getAction(), keyCode, 0);
+        Message msg = mHandler.obtainMessage(MSG_DISPATCH_VOLKEY_WITH_WAKE_LOCK, event);
+        msg.setAsynchronous(true);
+        mHandler.sendMessageDelayed(msg, ViewConfiguration.getLongPressTimeout());
+    }
+
+    @Override
+    public void takeAlternativeScreenshot() {
+        mScreenshotRunnable.setScreenshotType(TAKE_SCREENSHOT_FULLSCREEN);
+        mHandler.post(mScreenshotRunnable);
+    }
 }
