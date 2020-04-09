@@ -480,5 +480,8 @@
 
     <!-- Preferred refresh rate at keyguard, if supported by the display -->
     <integer name="config_keyguardRefreshRate">-1</integer>
+	
+	<!-- Asus stitch editor component name -->
+    <string name="config_stitchEditor">com.asus.stitchimage/com.asus.stitchimage.editor.ScreenshotEditorActivity</string>
 
 </resources>
