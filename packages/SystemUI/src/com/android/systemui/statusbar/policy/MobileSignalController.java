@@ -55,7 +55,7 @@ import java.util.regex.Pattern;
 
 
 public class MobileSignalController extends SignalController<
-        MobileSignalController.MobileState, MobileSignalController.MobileIconGroup> {
+        MobileSignalController.MobileState, MobileSignalController.MobileIconGroup> implements TunerService.Tunable {
 
     // The message to display Nr5G icon gracfully by CarrierConfig timeout
     private static final int MSG_DISPLAY_GRACE = 1;
