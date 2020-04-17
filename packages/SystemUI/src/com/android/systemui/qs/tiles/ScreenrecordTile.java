@@ -36,9 +36,7 @@ import javax.inject.Inject;
 
 /** Quick settings tile: Screenrecord **/
 public class ScreenrecordTile extends QSTileImpl<BooleanState> {
-	
-	private static ScreenRecordHelper mScreenRecordHelper;
-	
+
     @Inject
     public ScreenrecordTile(QSHost host) {
         super(host);
@@ -55,9 +53,7 @@ public class ScreenrecordTile extends QSTileImpl<BooleanState> {
     }
 
     @Override
-    public void handleSetListening(boolean listening) {
-		mScreenRecordHelper = new ScreenRecordHelper(mContext);
-	}
+    public void handleSetListening(boolean listening) {}
 
     @Override
     public boolean isAvailable() {
@@ -67,7 +63,8 @@ public class ScreenrecordTile extends QSTileImpl<BooleanState> {
     @Override
     public void handleClick() {
         mHost.collapsePanels();
-        mScreenRecordHelper.launchRecordPrompt();
+        ScreenRecordHelper screenRecordHelper = new ScreenRecordHelper(mContext);
+        screenRecordHelper.launchRecordPrompt();
     }
 
     @Override
