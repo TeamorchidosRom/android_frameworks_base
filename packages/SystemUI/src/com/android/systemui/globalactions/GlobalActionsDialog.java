@@ -453,8 +453,6 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
                 mItems.add(new RestartFastbootAction());
             } else if (GLOBAL_ACTION_KEY_SCREENSHOT.equals(actionKey)) {
                 mItems.add(new ScreenshotAction());
-            } else if (GLOBAL_ACTION_KEY_SCREENRECORD.equals(actionKey)) {
-                mItems.add(new ScreenrecordAction());
             } else if (GLOBAL_ACTION_KEY_LOGOUT.equals(actionKey)) {
                 if (mDevicePolicyManager.isLogoutEnabled()
                         && getCurrentUser().id != UserHandle.USER_SYSTEM) {
@@ -816,33 +814,6 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
                 mScreenshotHelper.takeScreenshot(2, true, true, mHandler, null);
             }
             return true;
-        }
-    }
-
-    private class ScreenrecordAction extends SinglePressAction implements LongPressAction {
-        public ScreenrecordAction() {
-            super(com.android.systemui.R.drawable.ic_qs_screenrecord,
-            com.android.systemui.R.string.global_action_screenrecord);
-        }
-
-        @Override
-        public void onPress() {
-            mScreenRecordHelper.launchRecordPrompt();
-        }
-
-        @Override
-        public boolean showDuringKeyguard() {
-            return true;
-        }
-
-        @Override
-        public boolean showBeforeProvisioning() {
-            return false;
-        }
-
-        @Override
-        public boolean onLongPress() {
-            return false;
         }
     }
 
