@@ -15,23 +15,7 @@
     limitations under the License.
 -->
 <resources>
-
-    <!-- Add tiles to QS help message -->
-    <string name="tap_or_drag_to_add_tiles">Tap or drag to add and remove tiles</string>
-
-    <!-- Caffeine QS Tile -->
-    <string name="quick_settings_caffeine_label">Caffeine</string>
-    <string name="accessibility_quick_settings_caffeine_off">Caffeine off</string>
-    <string name="accessibility_quick_settings_caffeine_on">Caffeine on</string>
-    <string name="quick_settings_caffeine_info_title">Enable Caffeine?</string>
-    <string name="quick_settings_caffeine_info_message">Caffeine prevents the screen from powering off due to inactivity.</string>
-
-    <!-- AOD QS tile states -->
-    <string name="quick_settings_aod_label">AOD</string>
-    <string name="quick_settings_aod_on_charge_label">AOD on charge</string>
-    <string name="quick_settings_aod_off_label">AOD off</string>
-    <string name="quick_settings_aod_off_powersave_label">AOD off\nBattery Saver</string>
-
+    
     <!-- Alerting notification header label -->
     <string name="notification_section_header_alerting">Alerting notifications</string>
 
