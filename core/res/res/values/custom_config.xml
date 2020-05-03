@@ -20,4 +20,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
 	<!-- Color of the FOD view -->
     <color name="config_fodColor">#00ff00</color>
+
+    <!-- Whether device supports internal audio recording -->
+    <bool name="config_hasInternalAudioRecordingSupport">true</bool>
+     
 </resources>
