@@ -125,7 +125,6 @@ public class VolumeDialogImpl implements VolumeDialog,
 
     static final int DIALOG_TIMEOUT_MILLIS = 3000;
     static final int DIALOG_SAFETYWARNING_TIMEOUT_MILLIS = 5000;
-    static final int DIALOG_ODI_CAPTIONS_TOOLTIP_TIMEOUT_MILLIS = 5000;
     static final int DIALOG_HOVERING_TIMEOUT_MILLIS = 16000;
     static final int DIALOG_SHOW_ANIMATION_DURATION = 300;
     static final int DIALOG_HIDE_ANIMATION_DURATION = 250;
@@ -141,8 +140,6 @@ public class VolumeDialogImpl implements VolumeDialog,
     private ViewGroup mDialogRowsView;
     private ViewGroup mRinger;
     private ImageButton mRingerIcon;
-    private ViewGroup mODICaptionsView;
-    private CaptionsToggleImageButton mODICaptionsIcon;
     private View mSettingsView;
     private ImageButton mSettingsIcon;
     private FrameLayout mZenIcon;
@@ -167,9 +164,6 @@ public class VolumeDialogImpl implements VolumeDialog,
     private boolean mHovering = false;
     private boolean mShowActiveStreamOnly;
     private boolean mConfigChanged = false;
-    private boolean mHasSeenODICaptionsTooltip;
-    private ViewStub mODICaptionsTooltipViewStub;
-    private View mODICaptionsTooltipView = null;
 
     // Volume panel placement left or right
     private boolean mVolumePanelOnLeft;
@@ -183,8 +177,6 @@ public class VolumeDialogImpl implements VolumeDialog,
         mAccessibilityMgr = Dependency.get(AccessibilityManagerWrapper.class);
         mDeviceProvisionedController = Dependency.get(DeviceProvisionedController.class);
         mShowActiveStreamOnly = showActiveStreamOnly();
-        mHasSeenODICaptionsTooltip =
-                Prefs.getBoolean(context, Prefs.Key.HAS_SEEN_ODI_CAPTIONS_TOOLTIP, false);
         Dependency.get(TunerService.class).addTunable(mTunable, SETTING_VOLUME_PANEL_ON_LEFT);
     }
 
@@ -282,16 +274,6 @@ public class VolumeDialogImpl implements VolumeDialog,
             setLayoutGravity(mRinger.getLayoutParams(), panelGravity);
         }
 
-        mODICaptionsView = mDialog.findViewById(R.id.odi_captions);
-        if (mODICaptionsView != null) {
-            mODICaptionsIcon = mODICaptionsView.findViewById(R.id.odi_captions_icon);
-        }
-        mODICaptionsTooltipViewStub = mDialog.findViewById(R.id.odi_captions_tooltip_stub);
-        if (mHasSeenODICaptionsTooltip && mODICaptionsTooltipViewStub != null) {
-            mDialogView.removeView(mODICaptionsTooltipViewStub);
-            mODICaptionsTooltipViewStub = null;
-        }
-
         mSettingsView = mDialog.findViewById(R.id.settings_container);
         mSettingsIcon = mDialog.findViewById(R.id.settings);
 
@@ -327,7 +309,6 @@ public class VolumeDialogImpl implements VolumeDialog,
         updateRowsH(getActiveRow());
         initRingerH();
         initSettingsH();
-        initODICaptionsH();
     }
 
     // Helper to set layout gravity.
@@ -577,107 +558,6 @@ public class VolumeDialogImpl implements VolumeDialog,
         updateRingerH();
     }
 
-    private void initODICaptionsH() {
-        if (mODICaptionsIcon != null) {
-            mODICaptionsIcon.setOnConfirmedTapListener(() -> {
-                onCaptionIconClicked();
-                Events.writeEvent(mContext, Events.EVENT_ODI_CAPTIONS_CLICK);
-            }, mHandler);
-        }
-
-        mController.getCaptionsComponentState(false);
-    }
-
-    private void checkODICaptionsTooltip(boolean fromDismiss) {
-        if (!mHasSeenODICaptionsTooltip && !fromDismiss && mODICaptionsTooltipViewStub != null) {
-            mController.getCaptionsComponentState(true);
-        } else {
-            if (mHasSeenODICaptionsTooltip && fromDismiss && mODICaptionsTooltipView != null) {
-                hideCaptionsTooltip();
-            }
-        }
-    }
-
-    protected void showCaptionsTooltip() {
-        if (!mHasSeenODICaptionsTooltip && mODICaptionsTooltipViewStub != null) {
-            mODICaptionsTooltipView = mODICaptionsTooltipViewStub.inflate();
-            mODICaptionsTooltipView.findViewById(R.id.dismiss).setOnClickListener(v -> {
-                hideCaptionsTooltip();
-                Events.writeEvent(mContext, Events.EVENT_ODI_CAPTIONS_TOOLTIP_CLICK);
-            });
-            mODICaptionsTooltipViewStub = null;
-            rescheduleTimeoutH();
-        }
-
-        if (mODICaptionsTooltipView != null) {
-            mODICaptionsTooltipView.setAlpha(0.f);
-            mODICaptionsTooltipView.animate()
-                .alpha(1.f)
-                .setStartDelay(DIALOG_SHOW_ANIMATION_DURATION)
-                .withEndAction(() -> {
-                    if (D.BUG) Log.d(TAG, "tool:checkODICaptionsTooltip() putBoolean true");
-                    Prefs.putBoolean(mContext,
-                            Prefs.Key.HAS_SEEN_ODI_CAPTIONS_TOOLTIP, true);
-                    mHasSeenODICaptionsTooltip = true;
-                    if (mODICaptionsIcon != null) {
-                        mODICaptionsIcon
-                                .postOnAnimation(getSinglePressFor(mODICaptionsIcon));
-                    }
-                })
-                .start();
-        }
-    }
-
-    private void hideCaptionsTooltip() {
-        if (mODICaptionsTooltipView != null && mODICaptionsTooltipView.getVisibility() == VISIBLE) {
-            mODICaptionsTooltipView.animate().cancel();
-            mODICaptionsTooltipView.setAlpha(1.f);
-            mODICaptionsTooltipView.animate()
-                    .alpha(0.f)
-                    .setStartDelay(0)
-                    .setDuration(DIALOG_HIDE_ANIMATION_DURATION)
-                    .withEndAction(() -> mODICaptionsTooltipView.setVisibility(INVISIBLE))
-                    .start();
-        }
-    }
-
-    protected void tryToRemoveCaptionsTooltip() {
-        if (mHasSeenODICaptionsTooltip && mODICaptionsTooltipView != null) {
-            ViewGroup container = mDialog.findViewById(R.id.volume_dialog_container);
-            container.removeView(mODICaptionsTooltipView);
-            mODICaptionsTooltipView = null;
-        }
-    }
-
-    private void updateODICaptionsH(boolean isServiceComponentEnabled, boolean fromTooltip) {
-        if (mODICaptionsView != null) {
-            mODICaptionsView.setVisibility(isServiceComponentEnabled ? VISIBLE : GONE);
-        }
-
-        if (!isServiceComponentEnabled) return;
-
-        updateCaptionsIcon();
-        if (fromTooltip) showCaptionsTooltip();
-    }
-
-    private void updateCaptionsIcon() {
-        boolean captionsEnabled = mController.areCaptionsEnabled();
-        if (mODICaptionsIcon.getCaptionsEnabled() != captionsEnabled) {
-            mHandler.post(mODICaptionsIcon.setCaptionsEnabled(captionsEnabled));
-        }
-
-        boolean isOptedOut = mController.isCaptionStreamOptedOut();
-        if (mODICaptionsIcon.getOptedOut() != isOptedOut) {
-            mHandler.post(() -> mODICaptionsIcon.setOptedOut(isOptedOut));
-        }
-    }
-
-    private void onCaptionIconClicked() {
-        boolean isEnabled = mController.areCaptionsEnabled();
-        mController.setCaptionsEnabled(!isEnabled);
-        updateCaptionsIcon();
-    }
-
     private void incrementManualToggleCount() {
         ContentResolver cr = mContext.getContentResolver();
         int ringerCount = Settings.Secure.getInt(cr, Settings.Secure.MANUAL_RINGER_TOGGLE_COUNT, 0);
@@ -758,8 +638,6 @@ public class VolumeDialogImpl implements VolumeDialog,
         mDialog.show();
         Events.writeEvent(mContext, Events.EVENT_SHOW_DIALOG, reason, mKeyguard.isKeyguardLocked());
         mController.notifyVisible(true);
-        mController.getCaptionsComponentState(false);
-        checkODICaptionsTooltip(false);
     }
 
     protected void rescheduleTimeoutH() {
@@ -779,12 +657,6 @@ public class VolumeDialogImpl implements VolumeDialog,
         if (mSafetyWarning != null) {
             return mAccessibilityMgr.getRecommendedTimeoutMillis(
                     DIALOG_SAFETYWARNING_TIMEOUT_MILLIS,
-                    AccessibilityManager.FLAG_CONTENT_TEXT
-                            | AccessibilityManager.FLAG_CONTENT_CONTROLS);
-        }
-        if (!mHasSeenODICaptionsTooltip && mODICaptionsTooltipView != null) {
-            return mAccessibilityMgr.getRecommendedTimeoutMillis(
-                    DIALOG_ODI_CAPTIONS_TOOLTIP_TIMEOUT_MILLIS,
                     AccessibilityManager.FLAG_CONTENT_TEXT
                             | AccessibilityManager.FLAG_CONTENT_CONTROLS);
         }
@@ -813,11 +685,9 @@ public class VolumeDialogImpl implements VolumeDialog,
                 .setInterpolator(new SystemUIInterpolators.LogAccelerateInterpolator())
                 .withEndAction(() -> mHandler.postDelayed(() -> {
                     mDialog.dismiss();
-                    tryToRemoveCaptionsTooltip();
                 }, 50));
         animator.translationX(getAnimatorX());
         animator.start();
-        checkODICaptionsTooltip(true);
         mController.notifyVisible(false);
         synchronized (mSafetyWarningLock) {
             if (mSafetyWarning != null) {
@@ -1383,12 +1253,6 @@ public class VolumeDialogImpl implements VolumeDialog,
                 updateRowsH(activeRow);
             }
 
-        }
-
-        @Override
-        public void onCaptionComponentStateChanged(
-                Boolean isComponentEnabled, Boolean fromTooltip) {
-            updateODICaptionsH(isComponentEnabled, fromTooltip);
         }
     };
 
