@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2014 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2014 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -14,33 +15,24 @@
 -->
 
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <item
-        android:id="@id/background"
-        android:alpha="?attr/disabledAlpha"
-        android:gravity="center_vertical|fill_horizontal|fill_vertical">
-        <shape
-            android:alpha="?attr/disabledAlpha"
-            android:shape="rectangle"
-            android:tint="?attr/colorProgressBackgroundNormal">
+    <item android:id="@id/background"
+          android:gravity="center_vertical|fill_horizontal">
+        <shape android:shape="rectangle"
+               android:tint="?attr/colorProgressBackgroundNormal">
             <corners android:radius="?attr/progressBarCornerRadius" />
             <size android:height="@dimen/seekbar_track_background_height_material" />
             <solid android:color="@color/white_disabled_material" />
         </shape>
     </item>
-    <item
-        android:id="@id/secondaryProgress"
-        android:alpha="?attr/disabledAlpha"
-        android:gravity="center_vertical|fill_horizontal|fill_vertical">
+    <item android:id="@id/secondaryProgress"
+          android:gravity="center_vertical|fill_horizontal">
         <scale android:scaleWidth="100%">
             <selector>
-                <item
-                    android:drawable="@color/transparent"
-                    android:state_enabled="false" />
+                <item android:state_enabled="false"
+                      android:drawable="@color/transparent" />
                 <item>
-                    <shape
-                        android:alpha="?attr/disabledAlpha"
-                        android:shape="rectangle"
-                        android:tint="?attr/colorControlActivated">
+                    <shape android:shape="rectangle"
+                           android:tint="?attr/colorControlActivated">
                         <corners android:radius="?attr/progressBarCornerRadius" />
                         <size android:height="@dimen/seekbar_track_progress_height_material" />
                         <solid android:color="@color/white_disabled_material" />
@@ -49,20 +41,15 @@
             </selector>
         </scale>
     </item>
-    <item
-        android:id="@id/progress"
-        android:alpha="?attr/disabledAlpha"
-        android:gravity="center_vertical|fill_horizontal|fill_vertical">
+    <item android:id="@id/progress"
+          android:gravity="center_vertical|fill_horizontal">
         <scale android:scaleWidth="100%">
             <selector>
-                <item
-                    android:drawable="@color/transparent"
-                    android:state_enabled="false" />
+                <item android:state_enabled="false"
+                      android:drawable="@color/transparent" />
                 <item>
-                    <shape
-                        android:alpha="?attr/disabledAlpha"
-                        android:shape="rectangle"
-                        android:tint="?attr/colorControlActivated">
+                    <shape android:shape="rectangle"
+                           android:tint="?attr/colorControlActivated">
                         <corners android:radius="?attr/progressBarCornerRadius" />
                         <size android:height="@dimen/seekbar_track_progress_height_material" />
                         <solid android:color="@color/white" />
