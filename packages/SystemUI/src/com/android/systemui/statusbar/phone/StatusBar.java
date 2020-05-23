@@ -279,7 +279,8 @@ public class StatusBar extends SystemUI implements DemoMode,
 
     public static final String SCREEN_BRIGHTNESS_MODE =
             "system:" + Settings.System.SCREEN_BRIGHTNESS_MODE;
-    public static final String FORCE_SHOW_NAVBAR =
+
+    private static final String FORCE_SHOW_NAVBAR =
             "lineagesystem:" + LineageSettings.System.FORCE_SHOW_NAVBAR;
 
     private static final String BANNER_ACTION_CANCEL =
