@@ -38,7 +38,7 @@ public class ViewConfiguration {
      * Defines the width of the horizontal scrollbar and the height of the vertical scrollbar in
      * dips
      */
-    private static final int SCROLL_BAR_SIZE = 4;
+    private static final int SCROLL_BAR_SIZE = 8;
 
     /**
      * Duration of the fade when scrollbars fade away in milliseconds
@@ -48,7 +48,7 @@ public class ViewConfiguration {
     /**
      * Default delay before the scrollbars fade in milliseconds
      */
-    private static final int SCROLL_BAR_DEFAULT_DELAY = 300;
+    private static final int SCROLL_BAR_DEFAULT_DELAY = 250;
 
     /**
      * Defines the length of the fading edges in dips
@@ -64,8 +64,9 @@ public class ViewConfiguration {
     /**
      * Defines the default duration in milliseconds before a press turns into
      * a long press
+     * @hide
      */
-    private static final int DEFAULT_LONG_PRESS_TIMEOUT = 250;
+    public static final int DEFAULT_LONG_PRESS_TIMEOUT = 200;
 
     /**
      * Defines the default duration in milliseconds between the first tap's up event and the second
