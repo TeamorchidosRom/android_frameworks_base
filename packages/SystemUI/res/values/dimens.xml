@@ -391,7 +391,7 @@
 
     <dimen name="notification_panel_width">@dimen/match_parent</dimen>
 
-    <dimen name="brightness_mirror_height">48dp</dimen>
+    <dimen name="brightness_mirror_height">24dp</dimen>
 
     <!-- The width of the panel that holds the quick settings. -->
     <dimen name="qs_panel_width">@dimen/notification_panel_width</dimen>
@@ -542,8 +542,9 @@
     <!-- Padding between subtitles and the following text in the QSFooter dialog -->
     <dimen name="qs_footer_dialog_subtitle_padding">20dp</dimen>
 
-    <dimen name="seek_bar_height">3dp</dimen>
-    <dimen name="seek_bar_corner_radius">3dp</dimen>
+    <dimen name="seek_bar_width">100dp</dimen>
+    <dimen name="seek_bar_corner_radius">15dp</dimen>
+    <dimen name="seek_bar_height">20dp</dimen>
 
     <!-- Zen mode panel: condition item button padding -->
     <dimen name="zen_mode_condition_detail_button_padding">8dp</dimen>
@@ -1188,7 +1189,7 @@
     <dimen name="volume_dialog_ringer_spacing">4dip</dimen>
     <dimen name="volume_dialog_ringer_height">38dip</dimen>
 
-    <dimen name="brightnessbar_additional_margin">44dp</dimen>
+    <dimen name="brightnessbar_additional_margin">22dp</dimen>
 
     <dimen name="lockscreen_shortcuts_preview_paddingVertical">30dp</dimen>
     <dimen name="lockscreen_shortcuts_preview_paddingHorizontal">50dp</dimen>
