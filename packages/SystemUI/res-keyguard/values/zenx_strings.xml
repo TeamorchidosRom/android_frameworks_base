@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Copyright (C) 2020 Zenx-OS
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="clock_title_binary" translatable="false">Binary</string>
+    <string name="clock_title_default_bold" translatable="false">Default (bold)</string>
+    <string name="clock_title_default_minute_bold" translatable="false">Default (Min bold)</string>
+    <string name="clock_title_default_hour_bold" translatable="false">Default (Hour bold)</string>
+    <string name="clock_title_samsung_big_hours" translatable="false">Sasmung (Big Hour)</string>
+    <string name="clock_title_samsung" translatable="false">Samsung</string>
+    <string name="clock_title_mnml_box" translatable="false">MNML\'s Box</string>
+    <string name="clock_title_mnml_minimal" translatable="false">MNML\'s Minimal</string>
+    <string name="date_long_title_today">Today is %s</string>
+    <string name="clock_title_samsung_bold_hour" translatable="false">Samsung (Hour bold)</string>
+    <string name="clock_title_samsung_bold_minute" translatable="false">Samsung (Minute bold)</string>
+    <string name="date_long_title_today_the">the</string>
+
+</resources>
