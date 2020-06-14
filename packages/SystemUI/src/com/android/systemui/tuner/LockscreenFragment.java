@@ -14,6 +14,7 @@
 
 package com.android.systemui.tuner;
 
+import android.annotation.Nullable;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.ComponentName;
@@ -28,6 +29,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.TypedValue;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,8 +56,9 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.function.Consumer;
 
-public class LockscreenFragment extends PreferenceFragment {
-
+public class LockscreenFragment extends TunerPreferenceFragment {
+    final static String TAG = "Tuner/LockscreenFragment";
+    
     private static final String KEY_LEFT = "left";
     private static final String KEY_RIGHT = "right";
     private static final String KEY_CUSTOMIZE = "customize";
@@ -65,21 +68,32 @@ public class LockscreenFragment extends PreferenceFragment {
     public static final String LOCKSCREEN_LEFT_UNLOCK = "sysui_keyguard_left_unlock";
     public static final String LOCKSCREEN_RIGHT_BUTTON = "sysui_keyguard_right";
     public static final String LOCKSCREEN_RIGHT_UNLOCK = "sysui_keyguard_right_unlock";
-    public static final String LOCKSCREEN_SHORTCUT_CAMERA = "c";
     public static final String LOCKSCREEN_SHORTCUT_NONE = "n";
-    public static final String LOCKSCREEN_SHORTCUT_VOICE_ASSIST = "v";
+    public static final String LOCKSCREEN_SHORTCUT_CAMERA = "c";
+    public static final String LOCKSCREEN_SHORTCUT_TORCH = "d";
 
     private final ArrayList<Tunable> mTunables = new ArrayList<>();
     private TunerService mTunerService;
     private Handler mHandler;
+    
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        mHandler = new Handler();
+        super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         mTunerService = Dependency.get(TunerService.class);
         mHandler = new Handler();
         addPreferencesFromResource(R.xml.lockscreen_settings);
-        setupGroup(LOCKSCREEN_LEFT_BUTTON, LOCKSCREEN_LEFT_UNLOCK);
-        setupGroup(LOCKSCREEN_RIGHT_BUTTON, LOCKSCREEN_RIGHT_UNLOCK);
+        setupGroup(LOCKSCREEN_LEFT_BUTTON, LOCKSCREEN_LEFT_UNLOCK, LOCKSCREEN_SHORTCUT_TORCH);
+        setupGroup(LOCKSCREEN_RIGHT_BUTTON, LOCKSCREEN_RIGHT_UNLOCK, LOCKSCREEN_SHORTCUT_CAMERA);
     }
 
     @Override
@@ -88,11 +102,11 @@ public class LockscreenFragment extends PreferenceFragment {
         mTunables.forEach(t -> mTunerService.removeTunable(t));
     }
 
-    private void setupGroup(String buttonSetting, String unlockKey) {
+    private void setupGroup(String buttonSetting, String unlockKey, String defaultKey) {
         Preference shortcut = findPreference(buttonSetting);
         SwitchPreference unlock = (SwitchPreference) findPreference(unlockKey);
         addTunable((k, v) -> {
-            boolean visible = !TextUtils.isEmpty(v) && (v.contains("/") || v.contains("::"));
+            boolean visible = !TextUtils.isEmpty(v) && (v.contains("/") || v.contains("::") || v.contains(defaultKey));
             unlock.setVisible(visible);
             setSummary(shortcut, v);
         }, buttonSetting);
@@ -125,10 +139,8 @@ public class LockscreenFragment extends PreferenceFragment {
             ActivityInfo info = getActivityinfo(getContext(), value);
             shortcut.setSummary(info != null ? info.loadLabel(getContext().getPackageManager())
                     : null);
-        } else if (value.equals(LOCKSCREEN_SHORTCUT_VOICE_ASSIST)) {
-            shortcut.setSummary(R.string.accessibility_voice_assist_button);
-        } else if (value.equals(LOCKSCREEN_SHORTCUT_CAMERA)) {
-            shortcut.setSummary(R.string.accessibility_camera_button);
+        } else if (value.equals(LOCKSCREEN_SHORTCUT_CAMERA) || value.equals(LOCKSCREEN_SHORTCUT_TORCH)) {
+            shortcut.setSummary(R.string.lockscreen_default);
         } else {
             shortcut.setSummary(R.string.lockscreen_none);
         }
@@ -338,8 +350,7 @@ public class LockscreenFragment extends PreferenceFragment {
                     return new ShortcutButton(mContext, buttonStr);
                 } else if (buttonStr.contains("/")) {
                     return new ActivityButton(mContext, buttonStr);
-                } else if (buttonStr.equals(LOCKSCREEN_SHORTCUT_CAMERA) ||
-                        buttonStr.equals(LOCKSCREEN_SHORTCUT_VOICE_ASSIST)) {
+                } else if (buttonStr.equals(LOCKSCREEN_SHORTCUT_CAMERA) || buttonStr.equals(LOCKSCREEN_SHORTCUT_TORCH)) {
                     return new FakeButton(buttonStr);
                 } else if (buttonStr.equals(LOCKSCREEN_SHORTCUT_NONE)) {
                     return new FakeButton("");

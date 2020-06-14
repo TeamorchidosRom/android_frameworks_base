@@ -2260,6 +2260,9 @@
 
     <!-- SysUI Tuner: Summary of no shortcut being selected [CHAR LIMIT=60] -->
     <string name="lockscreen_none">None</string>
+    
+    <!-- SysUI Tuner: Summary of no shortcut being selected [CHAR LIMIT=60] -->
+    <string name="lockscreen_default">Default</string>
 
     <!-- SysUI Tuner: Format string for describing launching an app [CHAR LIMIT=60] -->
     <string name="tuner_launch_app">Launch <xliff:g id="app" example="Settings">%1$s</xliff:g></string>

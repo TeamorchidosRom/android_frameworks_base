@@ -24,8 +24,9 @@ import static com.android.systemui.tuner.LockscreenFragment.LOCKSCREEN_LEFT_BUTT
 import static com.android.systemui.tuner.LockscreenFragment.LOCKSCREEN_LEFT_UNLOCK;
 import static com.android.systemui.tuner.LockscreenFragment.LOCKSCREEN_RIGHT_BUTTON;
 import static com.android.systemui.tuner.LockscreenFragment.LOCKSCREEN_RIGHT_UNLOCK;
+import static com.android.systemui.tuner.LockscreenFragment.LOCKSCREEN_SHORTCUT_NONE;
 import static com.android.systemui.tuner.LockscreenFragment.LOCKSCREEN_SHORTCUT_CAMERA;
-import static com.android.systemui.tuner.LockscreenFragment.LOCKSCREEN_SHORTCUT_VOICE_ASSIST;
+import static com.android.systemui.tuner.LockscreenFragment.LOCKSCREEN_SHORTCUT_TORCH;
 
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
@@ -72,7 +73,6 @@ import com.android.systemui.ActivityIntentHelper;
 import com.android.systemui.Dependency;
 import com.android.systemui.Interpolators;
 import com.android.systemui.R;
-import com.android.systemui.assist.AssistManager;
 import com.android.systemui.plugins.ActivityStarter;
 import com.android.systemui.plugins.IntentButtonProvider;
 import com.android.systemui.plugins.IntentButtonProvider.IntentButton;
@@ -156,9 +156,6 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
             mPrewarmMessenger = null;
         }
     };
-
-    private AssistManager mAssistManager;
-    private Drawable mLeftAssistIcon;
 
     private IntentButton mRightButton = new DefaultRightButton();
     private Extension<IntentButton> mRightExtension;
@@ -254,7 +251,6 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         mActivityStarter = Dependency.get(ActivityStarter.class);
         mFlashlightController = Dependency.get(FlashlightController.class);
         mAccessibilityController = Dependency.get(AccessibilityController.class);
-        mAssistManager = Dependency.get(AssistManager.class);
         mActivityIntentHelper = new ActivityIntentHelper(getContext());
         updateLeftAffordance();
     }
@@ -402,21 +398,13 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         }
 
         if (mLeftAffordanceView != null) {
-            if (mLeftButton instanceof DefaultLeftButton) {
+            if (isLeftAffordanceDefault()) {
                 updateLeftAffordanceIcon();
-            } else if (mLeftAffordanceView.getVisibility() != View.VISIBLE) {
+            } else if (mLeftAffordanceView.getVisibility() != View.VISIBLE && hasCameraFlash()) {
                 // Also includes inflating preview
-                updateLeftAffordance();
+                setLeftButton(mLeftButton);
             }
         }
-    }
-
-    /**
-     * Set an alternate icon for the left assist affordance (replace the mic icon)
-     */
-    public void setLeftAssistIcon(Drawable drawable) {
-        mLeftAssistIcon = drawable;
-        updateLeftAffordanceIcon();
     }
 
     private void updateLeftAffordanceIcon() {
@@ -441,10 +429,15 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
 		Log.d(TAG, "Device does not have a camera flashlight");
 		return false;
 	}
-
-        return (mRightButton instanceof DefaultRightButton);
+        
     // Default means camera - Pie default is camera too, but not visible
     public boolean isRightAffordanceDefault() {
+		return (mRightButton instanceof DefaultRightButton);
+    }
+	
+	// Default means Tourch - in my Q ROM default is Tourch, but not visible on devices with no camera flash
+    public boolean isLeftAffordanceDefault() {
+		return (mLeftButton instanceof DefaultLeftButton);
     }
 
     @Override
@@ -729,6 +722,12 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         updateLeftPreview();
     }
 
+    public void updateRightAffordance() {
+        updateRightAffordanceIcon();
+        inflateCameraPreview();
+    }
+
+
     public CharSequence getShortcutTargetName(boolean rightIcon){
         if (rightIcon) {
             return mRightButtonTarget;
@@ -737,13 +736,13 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         }
     }
 
-    private IntentButton translateTunerButton(IntentButton button) {
+    private IntentButton setTunerButton(IntentButton button) {
         IconState buttonIcon = button.getIcon();
 
         if (!buttonIcon.isVisible) {
             if (buttonIcon.contentDescription.equals(LOCKSCREEN_SHORTCUT_CAMERA)) {
                 return new DefaultRightButton(true);
-            } else if (buttonIcon.contentDescription.equals(LOCKSCREEN_SHORTCUT_VOICE_ASSIST)) {
+            } else if (buttonIcon.contentDescription.equals(LOCKSCREEN_SHORTCUT_TORCH)) {
                 return new DefaultLeftButton(true);
             }
         }
@@ -751,15 +750,12 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     }
 
     private void setRightButton(IntentButton button) {
-        mRightButton = translateTunerButton(button);
-        updateRightAffordanceIcon();
-        inflateCameraPreview();
+        mRightButton = setTunerButton(button);
+        updateRightAffordance();
     }
 
     private void setLeftButton(IntentButton button) {
-        mLeftButton = translateTunerButton(button);
-        if (!(mLeftButton instanceof DefaultLeftButton)) {
-        }
+        mLeftButton = setTunerButton(button);
         updateLeftAffordance();
     }
 
@@ -817,7 +813,8 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         @Override
         public IconState getIcon() {
             final boolean showAffordance =
-                    getResources().getBoolean(R.bool.config_keyguardShowFlashlightAffordance);
+                    getResources().getBoolean(R.bool.config_keyguardShowFlashlightAffordance) ||
+                            mForceVisibility;
             mIconState.isVisible = mUserSetupComplete && showAffordance && hasCameraFlash();
             mIconState.drawable = mContext.getDrawable(R.drawable.ic_torch);
             mIconState.contentDescription = mContext.getString(

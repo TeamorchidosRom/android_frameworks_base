@@ -15,9 +15,9 @@
 package com.android.systemui.tuner;
 
 import static com.android.systemui.tuner.LockscreenFragment.LOCKSCREEN_LEFT_BUTTON;
-import static com.android.systemui.tuner.LockscreenFragment.LOCKSCREEN_SHORTCUT_CAMERA;
 import static com.android.systemui.tuner.LockscreenFragment.LOCKSCREEN_SHORTCUT_NONE;
-import static com.android.systemui.tuner.LockscreenFragment.LOCKSCREEN_SHORTCUT_VOICE_ASSIST;
+import static com.android.systemui.tuner.LockscreenFragment.LOCKSCREEN_SHORTCUT_CAMERA;
+import static com.android.systemui.tuner.LockscreenFragment.LOCKSCREEN_SHORTCUT_TORCH;
 
 import android.content.Context;
 import android.content.pm.LauncherActivityInfo;
@@ -25,6 +25,7 @@ import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.os.Bundle;
 import android.os.Process;
+import android.util.Log;
 
 import androidx.preference.Preference;
 import androidx.preference.PreferenceCategory;
@@ -32,22 +33,26 @@ import androidx.preference.PreferenceFragment;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.PreferenceViewHolder;
 
-import com.android.systemui.assist.AssistManager;
 import com.android.systemui.Dependency;
 import com.android.systemui.R;
 import com.android.systemui.tuner.ShortcutParser.Shortcut;
 import com.android.systemui.tuner.TunerService.Tunable;
+import com.android.systemui.statusbar.policy.FlashlightController;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ShortcutPicker extends PreferenceFragment implements Tunable {
 
+    final static String TAG = "Tuner/ShortcutPicker";
+    
     private final ArrayList<SelectablePreference> mSelectablePreferences = new ArrayList<>();
-    private CustomPreference mDefaultPreference;
+    private CustomPreference mDefaultPreferenceLeft;
+    private CustomPreference mDefaultPreferenceRight;
     private CustomPreference mNonePreference;
     private String mKey;
     private TunerService mTunerService;
+    private FlashlightController mFlashlightController;
 
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
@@ -56,7 +61,9 @@ public class ShortcutPicker extends PreferenceFragment implements Tunable {
         screen.setOrderingAsAdded(true);
         PreferenceCategory otherApps = new PreferenceCategory(context);
         otherApps.setTitle(R.string.tuner_other_apps);
-
+		
+		mFlashlightController = Dependency.get(FlashlightController.class);
+		
         // True "none" preference
         mNonePreference = new CustomPreference(context, LOCKSCREEN_SHORTCUT_NONE);
         mSelectablePreferences.add(mNonePreference);
@@ -64,25 +71,26 @@ public class ShortcutPicker extends PreferenceFragment implements Tunable {
         mNonePreference.setIcon(R.drawable.ic_remove_circle);
         screen.addPreference(mNonePreference);
 
-        // Default shortcuts (voice assist and camera)
+         // Default shortcuts (torch and camera)
         mKey = getArguments().getString(ARG_PREFERENCE_ROOT);
         if (LOCKSCREEN_LEFT_BUTTON.equals(mKey)) {
-            mDefaultPreference = new CustomPreference(context, LOCKSCREEN_SHORTCUT_VOICE_ASSIST);
-            mSelectablePreferences.add(mDefaultPreference);
-            if (canLaunchVoiceAssist()) {
-                mDefaultPreference.setTitle(R.string.accessibility_voice_assist_button);
-                mDefaultPreference.setIcon(R.drawable.ic_mic_26dp);
-            } else {
-                mDefaultPreference.setTitle(R.string.accessibility_phone_button);
-                mDefaultPreference.setIcon(com.android.internal.R.drawable.ic_phone);
+            if (hasCameraFlash()) {
+                // True "torch" preferenc
+                mDefaultPreferenceLeft = new CustomPreference(context, LOCKSCREEN_SHORTCUT_TORCH);
+                mSelectablePreferences.add(mDefaultPreferenceLeft);
+                mDefaultPreferenceLeft.setTitle(R.string.lockscreen_default);
+                //mDefaultPreferenceLeft.setIcon(R.drawable.ic_add_circle);
+                mDefaultPreferenceLeft.setChecked(getResources().getBoolean(R.bool.config_keyguardShowFlashlightAffordance));
+                screen.addPreference(mDefaultPreferenceLeft);
             }
-            screen.addPreference(mDefaultPreference);
         } else {
-            mDefaultPreference = new CustomPreference(context, LOCKSCREEN_SHORTCUT_CAMERA);
-            mSelectablePreferences.add(mDefaultPreference);
-            mDefaultPreference.setTitle(R.string.accessibility_camera_button);
-            mDefaultPreference.setIcon(R.drawable.ic_camera_alt_24dp);
-            screen.addPreference(mDefaultPreference);
+            // True "camera" preference
+            mDefaultPreferenceRight = new CustomPreference(context, LOCKSCREEN_SHORTCUT_CAMERA);
+            mSelectablePreferences.add(mDefaultPreferenceRight);
+            mDefaultPreferenceRight.setTitle(R.string.lockscreen_default);
+            //mDefaultPreferenceRight.setIcon(R.drawable.ic_add_circle);
+            mDefaultPreferenceRight.setChecked(getResources().getBoolean(R.bool.config_keyguardShowCameraAffordance));
+            screen.addPreference(mDefaultPreferenceRight);
         }
 
         LauncherApps apps = getContext().getSystemService(LauncherApps.class);
@@ -97,9 +105,6 @@ public class ShortcutPicker extends PreferenceFragment implements Tunable {
                 AppPreference appPreference = new AppPreference(context, info);
                 mSelectablePreferences.add(appPreference);
                 if (shortcuts.size() != 0) {
-                    //PreferenceCategory category = new PreferenceCategory(context);
-                    //screen.addPreference(category);
-                    //category.setTitle(info.getLabel());
                     screen.addPreference(appPreference);
                     shortcuts.forEach(shortcut -> {
                         ShortcutPreference shortcutPref = new ShortcutPreference(context, shortcut,
@@ -121,17 +126,22 @@ public class ShortcutPicker extends PreferenceFragment implements Tunable {
             p.setOrder(Preference.DEFAULT_ORDER);
             screen.addPreference(p);
         }
-        //screen.addPreference(otherApps);
-
         setPreferenceScreen(screen);
         mTunerService = Dependency.get(TunerService.class);
         mTunerService.addTunable(this, mKey);
     }
-
-    private boolean canLaunchVoiceAssist() {
-        AssistManager mAssistManager = Dependency.get(AssistManager.class);
-        return mAssistManager.canVoiceAssistBeLaunchedFromKeyguard();
-    }
+    
+    private boolean hasCameraFlash() {
+		if (mFlashlightController != null) {
+		    mFlashlightController.initFlashLight();
+		    if (mFlashlightController.hasFlashlight() && mFlashlightController.isAvailable()) {
+				Log.d(TAG, "Device has camera flashlight");
+		        return true;
+		    }
+		}
+		Log.d(TAG, "Device does not have a camera flashlight");
+		return false;
+	}
 
     @Override
     public boolean onPreferenceTreeClick(Preference preference) {
