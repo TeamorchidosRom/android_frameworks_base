@@ -18,30 +18,30 @@ import com.android.systemui.Dumpable;
 import com.android.systemui.statusbar.policy.FlashlightController.FlashlightListener;
 
 public interface FlashlightController extends CallbackController<FlashlightListener>, Dumpable {
-
+	
     boolean hasFlashlight();
     void setFlashlight(boolean newState);
     boolean isAvailable();
     boolean isEnabled();
-
+    void initFlashLight();
+	
     public interface FlashlightListener {
-
-        /**
+        
+		/**
          * Called when the flashlight was turned off or on.
          * @param enabled true if the flashlight is currently turned on.
          */
         void onFlashlightChanged(boolean enabled);
-
-
-        /**
+        
+		/**
          * Called when there is an error that turns the flashlight off.
          */
-        void onFlashlightError();
-
-        /**
+		void onFlashlightError();
+        
+		/**
          * Called when there is a change in availability of the flashlight functionality
          * @param available true if the flashlight is currently available.
          */
-        void onFlashlightAvailabilityChanged(boolean available);
+		void onFlashlightAvailabilityChanged(boolean available);
     }
 }

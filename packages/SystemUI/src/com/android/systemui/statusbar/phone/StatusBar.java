@@ -3717,15 +3717,9 @@ public class StatusBar extends SystemUI implements DemoMode,
         mKeyguardIndicationController.showTransientIndication(hint);
     }
 
-    public void onVoiceAssistHintStarted(CharSequence hint) {
+    public void onTorchHintStarted(CharSequence hint) {
         mFalsingManager.onLeftAffordanceHintStarted();
-        hint = (TextUtils.isEmpty(hint) ? mContext.getString(R.string.voice_hint) : hint);
-        mKeyguardIndicationController.showTransientIndication(hint);
-    }
-
-    public void onPhoneHintStarted(CharSequence hint) {
-        mFalsingManager.onLeftAffordanceHintStarted();
-        hint = (TextUtils.isEmpty(hint) ? mContext.getString(R.string.phone_hint) : hint);
+        hint = (TextUtils.isEmpty(hint) ? mContext.getString(R.string.torch_hint) : hint);
         mKeyguardIndicationController.showTransientIndication(hint);
     }
 

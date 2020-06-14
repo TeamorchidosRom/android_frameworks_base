@@ -2712,11 +2712,7 @@ public class NotificationPanelView extends PanelView implements
         if (rightIcon) {
             mStatusBar.onCameraHintStarted(hint);
         } else {
-            if (mKeyguardBottomArea.isLeftVoiceAssist()) {
-                mStatusBar.onVoiceAssistHintStarted(hint);
-            } else {
-                mStatusBar.onPhoneHintStarted(hint);
-            }
+            mStatusBar.onTorchHintStarted(hint);
         }
     }
 

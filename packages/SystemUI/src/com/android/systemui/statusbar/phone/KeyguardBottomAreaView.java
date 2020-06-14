@@ -115,7 +115,9 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
                     .addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
     public static final Intent INSECURE_CAMERA_INTENT =
             new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
-    private static final Intent PHONE_INTENT = new Intent(Intent.ACTION_DIAL);
+	
+	public static final Intent TORCH_INTENT =
+            new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
     private static final int DOZE_ANIMATION_STAGGER_DELAY = 48;
     private static final int DOZE_ANIMATION_ELEMENT_DURATION = 250;
 
@@ -155,7 +157,6 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         }
     };
 
-    private boolean mLeftIsVoiceAssist;
     private AssistManager mAssistManager;
     private Drawable mLeftAssistIcon;
 
@@ -199,11 +200,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
             if (host == mRightAffordanceView) {
                 label = getResources().getString(R.string.camera_label);
             } else if (host == mLeftAffordanceView) {
-                if (mLeftIsVoiceAssist) {
-                    label = getResources().getString(R.string.voice_assist_label);
-                } else {
-                    label = getResources().getString(R.string.phone_label);
-                }
+                label = getResources().getString(R.string.torch_label);
             }
             info.addAction(new AccessibilityAction(ACTION_CLICK, label));
         }
@@ -214,7 +211,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
                 if (host == mRightAffordanceView) {
                     launchCamera(CAMERA_LAUNCH_SOURCE_AFFORDANCE);
                     return true;
-                } else if (host == mLeftAffordanceView) {
+                } else if (host == mLeftAffordanceView && hasCameraFlash()) {
                     launchLeftAffordance();
                     return true;
                 }
@@ -433,19 +430,21 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         mLeftAffordanceView.setContentDescription(state.contentDescription);
     }
 
-    public boolean isLeftVoiceAssist() {
-        return mLeftIsVoiceAssist;
-    }
+    private boolean hasCameraFlash() {
+		if (mFlashlightController != null) {
+		    mFlashlightController.initFlashLight();
+		    if (mFlashlightController.hasFlashlight() && mFlashlightController.isAvailable()) {
+				Log.d(TAG, "Device has camera flashlight");
+		        return true;
+		    }
+		}
+		Log.d(TAG, "Device does not have a camera flashlight");
+		return false;
+	}
 
+        return (mRightButton instanceof DefaultRightButton);
     // Default means camera - Pie default is camera too, but not visible
     public boolean isRightAffordanceDefault() {
-        return (mRightButton instanceof DefaultRightButton);
-    }
-
-    private boolean isPhoneVisible() {
-        PackageManager pm = mContext.getPackageManager();
-        return pm.hasSystemFeature(PackageManager.FEATURE_TELEPHONY)
-                && pm.resolveActivity(PHONE_INTENT, 0) != null;
     }
 
     @Override
@@ -460,7 +459,7 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     public void onClick(View v) {
         if (v == mRightAffordanceView) {
             launchCamera(CAMERA_LAUNCH_SOURCE_AFFORDANCE);
-        } else if (v == mLeftAffordanceView) {
+        } else if (v == mLeftAffordanceView && hasCameraFlash()) {
             launchLeftAffordance();
         }
     }
@@ -589,48 +588,16 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     }
 
     public void launchLeftAffordance() {
-        if (mLeftIsVoiceAssist) {
-            launchVoiceAssist();
-        } else {
-            launchPhone();
-        }
+        toggleCameraFlash();
     }
-
-    @VisibleForTesting
-    void launchVoiceAssist() {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                mAssistManager.launchVoiceAssistFromKeyguard();
+	
+    private void toggleCameraFlash() {
+        Log.d(TAG, "Toggling camera flashlight");
+		if (mFlashlightController != null) {
+		    mFlashlightController.initFlashLight();
+		    if (hasCameraFlash()) {
+                mFlashlightController.setFlashlight(!mFlashlightController.isEnabled());
             }
-        };
-        if (mStatusBar.isKeyguardCurrentlySecure()) {
-            AsyncTask.execute(runnable);
-        } else {
-            boolean dismissShade = !TextUtils.isEmpty(mRightButtonStr)
-                    && Dependency.get(TunerService.class).getValue(LOCKSCREEN_RIGHT_UNLOCK, 1) != 0;
-            mStatusBar.executeRunnableDismissingKeyguard(runnable, null /* cancelAction */,
-                    dismissShade, false /* afterKeyguardGone */, true /* deferred */);
-        }
-    }
-
-    private boolean canLaunchVoiceAssist() {
-        return mAssistManager.canVoiceAssistBeLaunchedFromKeyguard();
-    }
-
-    private void launchPhone() {
-        final TelecomManager tm = TelecomManager.from(mContext);
-        if (tm.isInCall()) {
-            AsyncTask.execute(new Runnable() {
-                @Override
-                public void run() {
-                    tm.showInCallScreen(false /* showDialpad */);
-                }
-            });
-        } else {
-            boolean dismissShade = !TextUtils.isEmpty(mLeftButtonStr)
-                    && Dependency.get(TunerService.class).getValue(LOCKSCREEN_LEFT_UNLOCK, 1) != 0;
-            mActivityStarter.startActivity(mLeftButton.getIntent(), dismissShade);
         }
     }
 
@@ -696,13 +663,10 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
         if (previewBefore != null) {
             mPreviewContainer.removeView(previewBefore);
         }
-        if (mLeftIsVoiceAssist) {
-            mLeftPreview = mPreviewInflater.inflatePreviewFromService(
-                    mAssistManager.getVoiceInteractorComponentName());
-        } else {
-            mLeftPreview = mPreviewInflater.inflatePreview(mLeftButton.getIntent());
-        }
-        if (mLeftPreview != null) {
+        
+		mLeftPreview = mPreviewInflater.inflatePreview(mLeftButton.getIntent());
+        
+		if (mLeftPreview != null) {
             mPreviewContainer.addView(mLeftPreview);
             mLeftPreview.setVisibility(View.INVISIBLE);
         }
@@ -795,7 +759,6 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
     private void setLeftButton(IntentButton button) {
         mLeftButton = translateTunerButton(button);
         if (!(mLeftButton instanceof DefaultLeftButton)) {
-            mLeftIsVoiceAssist = false;
         }
         updateLeftAffordance();
     }
@@ -853,32 +816,18 @@ public class KeyguardBottomAreaView extends FrameLayout implements View.OnClickL
 
         @Override
         public IconState getIcon() {
-            mLeftIsVoiceAssist = canLaunchVoiceAssist();
             final boolean showAffordance =
-                    getResources().getBoolean(R.bool.config_keyguardShowLeftAffordance) ||
-                            mForceVisibility;
-            if (mLeftIsVoiceAssist) {
-                mIconState.isVisible = mUserSetupComplete && showAffordance;
-                if (mLeftAssistIcon == null) {
-                    mIconState.drawable = mContext.getDrawable(R.drawable.ic_mic_26dp);
-                } else {
-                    mIconState.drawable = mLeftAssistIcon;
-                }
-                mIconState.contentDescription = mContext.getString(
-                        R.string.accessibility_voice_assist_button);
-            } else {
-                mIconState.isVisible = mUserSetupComplete && showAffordance && isPhoneVisible();
-                mIconState.drawable = mContext.getDrawable(
-                        com.android.internal.R.drawable.ic_phone);
-                mIconState.contentDescription = mContext.getString(
-                        R.string.accessibility_phone_button);
-            }
+                    getResources().getBoolean(R.bool.config_keyguardShowFlashlightAffordance);
+            mIconState.isVisible = mUserSetupComplete && showAffordance && hasCameraFlash();
+            mIconState.drawable = mContext.getDrawable(R.drawable.ic_torch);
+            mIconState.contentDescription = mContext.getString(
+                        R.string.accessibility_torch_button);
             return mIconState;
         }
 
         @Override
         public Intent getIntent() {
-            return PHONE_INTENT;
+            return TORCH_INTENT;
         }
     }
 
