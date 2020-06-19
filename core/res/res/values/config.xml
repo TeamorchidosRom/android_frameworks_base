@@ -1978,7 +1978,7 @@
     <!-- Flag indicating whether all audio streams should be mapped to
          one single stream. If true, all audio streams are mapped to
          STREAM_MUSIC as if it's on TV platform. -->
-    <bool name="config_single_volume">true</bool>
+    <bool name="config_single_volume">false</bool>
 
     <!-- Flag indicating that an outbound call must have a call capable phone account
          that has declared it can process the call's handle. -->
@@ -2609,7 +2609,7 @@
 
     <!-- When true use the linux /dev/input/event subsystem to detect the switch changes
          on the headphone/microphone jack. When false use the older uevent framework. -->
-    <bool name="config_useDevInputEventForAudioJack">true</bool>
+    <bool name="config_useDevInputEventForAudioJack">false</bool>
 
     <!-- Whether safe headphone volume is enabled or not (country specific). -->
     <bool name="config_safe_media_volume_enabled">true</bool>
