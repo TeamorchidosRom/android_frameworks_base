@@ -146,27 +146,30 @@ public final class ClockManager {
 
         Resources res = context.getResources();
         LayoutInflater layoutInflater = injectionInflater.injectable(LayoutInflater.from(context));
-
+		
+		// Digital Clocks
         addBuiltinClock(() -> new DefaultClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new DefaultBoldClockController(res, layoutInflater, colorExtractor));
+		addBuiltinClock(() -> new DefaultBoldHourClockController(res, layoutInflater, colorExtractor, context));
+        addBuiltinClock(() -> new DefaultBoldMinuteClockController(res, layoutInflater, colorExtractor, context));
         addBuiltinClock(() -> new SamsungClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new SamsungBoldClockController(res, layoutInflater, colorExtractor));
-        addBuiltinClock(() -> new DefaultBoldHourClockController(res, layoutInflater, colorExtractor, context));
-        addBuiltinClock(() -> new DefaultBoldMinuteClockController(res, layoutInflater, colorExtractor, context));
         addBuiltinClock(() -> new SamsungHighlightClockController(res, layoutInflater, colorExtractor));
-        addBuiltinClock(() -> new BubbleClockController(res, layoutInflater, colorExtractor));
-        addBuiltinClock(() -> new AnalogClockController(res, layoutInflater, colorExtractor));
+		addBuiltinClock(() -> new SamsungBigHourClockController(res, layoutInflater, colorExtractor, context));
         addBuiltinClock(() -> new BinaryClockController(res, layoutInflater, colorExtractor));
-        addBuiltinClock(() -> new DotClockController(res, layoutInflater, colorExtractor));
-        addBuiltinClock(() -> new SneekyClockController(res, layoutInflater, colorExtractor));
-        addBuiltinClock(() -> new SpectrumClockController(res, layoutInflater, colorExtractor));
-        addBuiltinClock(() -> new SpideyClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new DividedLinesClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new SfunyClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new OronosClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new MNMLBoxClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new MNMLMinimalClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new SamsungBigHourClockController(res, layoutInflater, colorExtractor, context));
+		// Analog Clocks
+		addBuiltinClock(() -> new SpideyClockController(res, layoutInflater, colorExtractor));
+		addBuiltinClock(() -> new BubbleClockController(res, layoutInflater, colorExtractor));
+        addBuiltinClock(() -> new AnalogClockController(res, layoutInflater, colorExtractor));
+		addBuiltinClock(() -> new DotClockController(res, layoutInflater, colorExtractor));
+        addBuiltinClock(() -> new SneekyClockController(res, layoutInflater, colorExtractor));
+        addBuiltinClock(() -> new SpectrumClockController(res, layoutInflater, colorExtractor));
 
         // Store the size of the display for generation of clock preview.
         DisplayMetrics dm = res.getDisplayMetrics();

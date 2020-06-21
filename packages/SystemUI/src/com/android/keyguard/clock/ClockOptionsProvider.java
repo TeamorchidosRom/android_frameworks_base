@@ -58,6 +58,7 @@ public final class ClockOptionsProvider extends ContentProvider {
     private static final String KEY_THUMBNAIL = "thumbnail";
     private static final String COLUMN_NAME = "name";
     private static final String COLUMN_TITLE = "title";
+	private static final String COLUMN_TYPE = "type";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_THUMBNAIL = "thumbnail";
     private static final String COLUMN_PREVIEW = "preview";

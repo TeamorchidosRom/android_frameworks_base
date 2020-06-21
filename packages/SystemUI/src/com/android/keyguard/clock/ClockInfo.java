@@ -26,14 +26,16 @@ final class ClockInfo {
 
     private final String mName;
     private final Supplier<String> mTitle;
+	private final Supplier<String> mType;
     private final String mId;
     private final Supplier<Bitmap> mThumbnail;
     private final Supplier<Bitmap> mPreview;
 
-    private ClockInfo(String name, Supplier<String> title, String id,
+    private ClockInfo(String name, Supplier<String> title, Supplier<String> type, String id,
             Supplier<Bitmap> thumbnail, Supplier<Bitmap> preview) {
         mName = name;
         mTitle = title;
+		mType = type;
         mId = id;
         mThumbnail = thumbnail;
         mPreview = preview;
@@ -53,6 +55,13 @@ final class ClockInfo {
         return mTitle.get();
     }
 
+    /**
+     * Gets the type of the clock face to be shown in the picker app for sorting.
+     */
+    /*String getType() {
+        return mType.get();
+    }*/
+	
     /**
      * Gets the ID of the clock face, used by the picker to set the current selection.
      */
@@ -81,12 +90,13 @@ final class ClockInfo {
     static class Builder {
         private String mName;
         private Supplier<String> mTitle;
+		private Supplier<String> mType;
         private String mId;
         private Supplier<Bitmap> mThumbnail;
         private Supplier<Bitmap> mPreview;
 
         public ClockInfo build() {
-            return new ClockInfo(mName, mTitle, mId, mThumbnail, mPreview);
+            return new ClockInfo(mName, mTitle, mType, mId, mThumbnail, mPreview);
         }
 
         public Builder setName(String name) {
@@ -98,7 +108,16 @@ final class ClockInfo {
             mTitle = title;
             return this;
         }
-
+		
+/*		public Builder setType(Supplier<int> type) {
+			switch(type){                                                     
+            	case 0: mType = "a"; break;                   
+            	case 1: mType = "d"; break;                   
+            	default: mType = "u"; break;                        
+        	}
+            return this;
+        }*/
+		
         public Builder setId(String id) {
             mId = id;
             return this;

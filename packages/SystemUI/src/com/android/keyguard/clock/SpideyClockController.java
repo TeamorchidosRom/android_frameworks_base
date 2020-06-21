@@ -115,7 +115,7 @@ public class SpideyClockController implements ClockPlugin {
     public String getName() {
         return "spidey";
     }
-
+	
     @Override
     public String getTitle() {
         return mResources.getString(R.string.clock_title_spidey);

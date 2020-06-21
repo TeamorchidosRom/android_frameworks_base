@@ -26,7 +26,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.TextClock;
 import android.content.Context;
-import com.android.internal.util.zenx.ZenxUtils;
 
 import com.android.internal.colorextraction.ColorExtractor;
 import com.android.systemui.R;
@@ -162,11 +161,7 @@ public class DefaultBoldMinuteClockController implements ClockPlugin {
 
     @Override
     public void setTextColor(int color) {
-        if(ZenxUtils.useLockscreenClockAccentColor(mContext)) {
-            mClock.setTextColor(mContext.getResources().getColor(R.color.lockscreen_clock_accent_color));
-        } else {
-            mClock.setTextColor(color);
-        }
+		mClock.setTextColor(color);
     }
 
     @Override

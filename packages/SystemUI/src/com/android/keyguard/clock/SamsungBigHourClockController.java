@@ -31,7 +31,6 @@ import com.android.internal.colorextraction.ColorExtractor;
 import com.android.systemui.R;
 import com.android.systemui.colorextraction.SysuiColorExtractor;
 import com.android.systemui.plugins.ClockPlugin;
-import com.android.internal.util.zenx.ZenxUtils;
 
 import java.util.TimeZone;
 
@@ -106,7 +105,7 @@ public class SamsungBigHourClockController implements ClockPlugin {
 
     @Override
     public String getName() {
-        return "samsung_bold";
+        return "samsung_bold_hour";
     }
 
     @Override
@@ -162,11 +161,7 @@ public class SamsungBigHourClockController implements ClockPlugin {
 
     @Override
     public void setTextColor(int color) {
-        if(ZenxUtils.useLockscreenClockAccentColor(mContext)) {
-            mClock.setTextColor(mContext.getResources().getColor(R.color.lockscreen_clock_accent_color));
-        } else {
-             mClock.setTextColor(color);
-        }
+		mClock.setTextColor(color);
     }
 
     @Override
