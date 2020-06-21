@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:dither="true"
+    android:tint="?attr/colorAccent"
+    android:tintMode="multiply">
+    <gradient
+        android:angle="-90"
+        android:centerColor="#252525"
+        android:endColor="#292929"
+        android:startColor="#212121"
+        android:type="linear"
+        android:useLevel="false"/>
+    <stroke
+        android:width="5dp"
+        android:color="#292929" />
+    <padding
+        android:bottom="0dp"
+        android:left="0dp"
+        android:right="0dp"
+        android:top="0dp" />
+</shape>

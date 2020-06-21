@@ -162,7 +162,7 @@ public final class ClockManager {
         addBuiltinClock(() -> new OronosClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new MNMLBoxClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new MNMLMinimalClockController(res, layoutInflater, colorExtractor));
-        addBuiltinClock(() -> new SamsungBigHourClockController(res, layoutInflater, colorExtractor, context));
+		addBuiltinClock(() -> new LightningClockController(res, layoutInflater, colorExtractor));
 		// Analog Clocks
 		addBuiltinClock(() -> new SpideyClockController(res, layoutInflater, colorExtractor));
 		addBuiltinClock(() -> new CustomNumClockController(res, layoutInflater, colorExtractor));
