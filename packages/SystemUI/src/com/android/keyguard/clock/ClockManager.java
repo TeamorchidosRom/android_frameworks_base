@@ -165,6 +165,7 @@ public final class ClockManager {
         addBuiltinClock(() -> new SamsungBigHourClockController(res, layoutInflater, colorExtractor, context));
 		// Analog Clocks
 		addBuiltinClock(() -> new SpideyClockController(res, layoutInflater, colorExtractor));
+		addBuiltinClock(() -> new CustomNumClockController(res, layoutInflater, colorExtractor));
 		addBuiltinClock(() -> new BubbleClockController(res, layoutInflater, colorExtractor));
         addBuiltinClock(() -> new AnalogClockController(res, layoutInflater, colorExtractor));
 		addBuiltinClock(() -> new DotClockController(res, layoutInflater, colorExtractor));
