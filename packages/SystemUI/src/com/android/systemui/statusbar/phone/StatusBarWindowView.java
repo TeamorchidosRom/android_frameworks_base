@@ -157,7 +157,8 @@ public class StatusBarWindowView extends FrameLayout {
                         Settings.Secure.DOZE_DOUBLE_TAP_GESTURE, 1, UserHandle.USER_CURRENT) == 1;
                 break;
             case Settings.Secure.DOZE_TAP_SCREEN_GESTURE:
-                mSingleTapEnabled = configuration.tapGestureEnabled(UserHandle.USER_CURRENT);
+                mSingleTapEnabled = Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                        Settings.Secure.DOZE_TAP_SCREEN_GESTURE, 1, UserHandle.USER_CURRENT) == 1;
                 break;
             case DOUBLE_TAP_SLEEP_GESTURE:
                 mDoubleTapToSleepEnabled = newValue == null || Integer.parseInt(newValue) == 1;
