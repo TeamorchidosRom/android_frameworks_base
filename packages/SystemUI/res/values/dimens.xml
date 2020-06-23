@@ -398,13 +398,13 @@
 
     <dimen name="volume_dialog_panel_transparent_padding_horizontal">4dp</dimen>
 
-    <dimen name="volume_dialog_panel_transparent_padding_right">12dp</dimen>
+    <dimen name="volume_dialog_panel_transparent_padding_right">6dp</dimen>
 
-    <dimen name="volume_dialog_panel_transparent_padding">20dp</dimen>
+    <dimen name="volume_dialog_panel_transparent_padding">10dp</dimen>
 
     <dimen name="volume_dialog_stream_padding">8dp</dimen>
 
-    <dimen name="volume_dialog_panel_width">64dp</dimen>
+    <dimen name="volume_dialog_panel_width">16dp</dimen>
 
     <dimen name="volume_dialog_slider_height">175dp</dimen>
 
@@ -412,13 +412,13 @@
 
     <dimen name="volume_dialog_ringer_icon_padding">20dp</dimen>
 
-    <dimen name="volume_dialog_caption_size">64dp</dimen>
+    <dimen name="volume_dialog_caption_size">16dp</dimen>
 
     <dimen name="volume_dialog_tap_target_size">48dp</dimen>
 
-    <dimen name="volume_dialog_spacer">12dp</dimen>
+    <dimen name="volume_dialog_spacer">6dp</dimen>
 
-    <dimen name="volume_dialog_slider_margin_top">14dp</dimen>
+    <dimen name="volume_dialog_slider_margin_top">7dp</dimen>
 
     <dimen name="volume_dialog_slider_margin_bottom">-2dp</dimen>
 
@@ -428,7 +428,7 @@
 
     <dimen name="volume_tool_tip_right_margin">76dp</dimen>
 
-    <dimen name="volume_tool_tip_bottom_margin">32dp</dimen>
+    <dimen name="volume_tool_tip_bottom_margin">16dp</dimen>
 
     <dimen name="volume_tool_tip_arrow_corner_radius">12dp</dimen>
 
@@ -890,7 +890,7 @@
     <dimen name="volume_row_padding_bottom">9.4dp</dimen>
     <dimen name="volume_row_padding_start">4dp</dimen>
     <dimen name="volume_row_header_padding_start">16dp</dimen>
-    <dimen name="volume_row_height">64dp</dimen>
+    <dimen name="volume_row_height">16dp</dimen>
     <dimen name="volume_row_slider_height">12dp</dimen>
     <dimen name="volume_row_slider_padding_start">12dp</dimen>
 
