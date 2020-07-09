@@ -66,14 +66,15 @@ import java.util.TimeZone;
 public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.Callbacks,
         DarkReceiver, ConfigurationListener {
 
+	private static final String TAG = "StatusBarClock";
     public static final String CLOCK_SECONDS = "clock_seconds";
-    private static final String TAG = "StatusBarClock";
+	public static final String CLOCK_AM_PM = "clock_am_pm";
 
-    private static final String CLOCK_STYLE = "lineagesystem:status_bar_am_pm";
     private static final String CLOCK_SUPER_PARCELABLE = "clock_super_parcelable";
     private static final String CURRENT_USER_ID = "current_user_id";
     private static final String VISIBLE_BY_POLICY = "visible_by_policy";
     private static final String VISIBLE_BY_USER = "visible_by_user";
+	private static final String SHOW_AM_PM = "show_am_pm";
     private static final String SHOW_SECONDS = "show_seconds";
     private static final String VISIBILITY = "visibility";
 
@@ -94,7 +95,9 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
     private static final int AM_PM_STYLE_NORMAL    = 0;
 
     private int mAmPmStyle = AM_PM_STYLE_NORMAL;
+	
     private final boolean mShowDark;
+	private boolean mShowAmPm;
     private boolean mShowSeconds;
     private Handler mSecondsHandler;
 
@@ -145,6 +148,7 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
         bundle.putInt(CURRENT_USER_ID, mCurrentUserId);
         bundle.putBoolean(VISIBLE_BY_POLICY, mClockVisibleByPolicy);
         bundle.putBoolean(VISIBLE_BY_USER, mClockVisibleByUser);
+		bundle.putBoolean(SHOW_AM_PM, mShowAmPm);
         bundle.putBoolean(SHOW_SECONDS, mShowSeconds);
         bundle.putInt(VISIBILITY, getVisibility());
 
@@ -166,6 +170,7 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
         }
         mClockVisibleByPolicy = bundle.getBoolean(VISIBLE_BY_POLICY, true);
         mClockVisibleByUser = bundle.getBoolean(VISIBLE_BY_USER, true);
+		mShowAmPm = bundle.getBoolean(SHOW_AM_PM, false);
         mShowSeconds = bundle.getBoolean(SHOW_SECONDS, false);
         if (bundle.containsKey(VISIBILITY)) {
             super.setVisibility(bundle.getInt(VISIBILITY));
@@ -188,7 +193,7 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
 
             getContext().registerReceiverAsUser(mIntentReceiver, UserHandle.ALL, filter,
                     null, Dependency.get(Dependency.TIME_TICK_HANDLER));
-            Dependency.get(TunerService.class).addTunable(this, CLOCK_SECONDS, CLOCK_STYLE);
+            Dependency.get(TunerService.class).addTunable(this, CLOCK_SECONDS, CLOCK_AM_PM);
             SysUiServiceProvider.getComponent(getContext(), CommandQueue.class).addCallback(this);
             if (mShowDark) {
                 Dependency.get(DarkIconDispatcher.class).addDarkReceiver(this);
@@ -300,12 +305,12 @@ public class Clock extends TextView implements DemoMode, Tunable, CommandQueue.C
         if (CLOCK_SECONDS.equals(key)) {
             mShowSeconds = TunerService.parseIntegerSwitch(newValue, false);
             updateShowSeconds();
-        } else if (CLOCK_STYLE.equals(key)) {
-            try {
-                mAmPmStyle = Integer.valueOf(newValue);
-            } catch (NumberFormatException ex) {
+        } else if (CLOCK_AM_PM.equals(key)) {
+			if (TunerService.parseIntegerSwitch(newValue, false)) {
+                mAmPmStyle = AM_PM_STYLE_NORMAL;
+			} else {
                 mAmPmStyle = AM_PM_STYLE_GONE;
-            }
+			}
             mClockFormatString = ""; // force refresh
             updateClock();
         }

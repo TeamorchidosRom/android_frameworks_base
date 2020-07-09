@@ -27,15 +27,18 @@ import com.android.systemui.statusbar.policy.Clock;
 public class ClockPreference extends DropDownPreference implements TunerService.Tunable {
 
     private static final String SECONDS = "seconds";
+	private static final String AMPM = "ampm";
     private static final String DEFAULT = "default";
     private static final String DISABLED = "disabled";
 
     private final String mClock;
     private boolean mClockEnabled;
     private boolean mHasSeconds;
+	private boolean mHasAmPm;
     private ArraySet<String> mBlacklist;
     private boolean mHasSetValue;
     private boolean mReceivedSeconds;
+	private boolean mReceivedAmPm;
     private boolean mReceivedClock;
 
     public ClockPreference(Context context, AttributeSet attrs) {
@@ -49,6 +52,8 @@ public class ClockPreference extends DropDownPreference implements TunerService.
         super.onAttached();
         Dependency.get(TunerService.class).addTunable(this, StatusBarIconController.ICON_BLACKLIST,
                 Clock.CLOCK_SECONDS);
+		Dependency.get(TunerService.class).addTunable(this, StatusBarIconController.ICON_BLACKLIST,
+                Clock.CLOCK_AM_PM);
     }
 
     @Override
@@ -67,12 +72,18 @@ public class ClockPreference extends DropDownPreference implements TunerService.
             mReceivedSeconds = true;
             mHasSeconds = TunerService.parseIntegerSwitch(newValue, false);
         }
-        if (!mHasSetValue && mReceivedClock && mReceivedSeconds) {
+		 else if (Clock.CLOCK_AM_PM.equals(key)) {
+            mReceivedAmPm = true;
+            mHasAmPm = TunerService.parseIntegerSwitch(newValue, false);
+        }
+        if (!mHasSetValue && mReceivedClock && mReceivedSeconds && mReceivedAmPm) {
             // Because of the complicated tri-state it can end up looping and setting state back to
             // what the user didn't choose.  To avoid this, just set the state once and rely on the
             // preference to handle updates.
             mHasSetValue = true;
             if (mClockEnabled && mHasSeconds) {
+                setValue(SECONDS);
+            } else if (mClockEnabled && mHasAmPm) {
                 setValue(SECONDS);
             } else if (mClockEnabled) {
                 setValue(DEFAULT);
@@ -85,6 +96,8 @@ public class ClockPreference extends DropDownPreference implements TunerService.
     @Override
     protected boolean persistString(String value) {
         Dependency.get(TunerService.class).setValue(Clock.CLOCK_SECONDS, SECONDS.equals(value) ? 1
+                : 0);
+		Dependency.get(TunerService.class).setValue(Clock.CLOCK_AM_PM, AMPM.equals(value) ? 1
                 : 0);
         if (DISABLED.equals(value)) {
             mBlacklist.add(mClock);
