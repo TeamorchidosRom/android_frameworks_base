@@ -8,7 +8,4 @@
     <java-symbol type="string" name="url_copy_success" />
     <java-symbol type="string" name="url_copy_failed" />
 
-    <!-- Whether device uses linear screen brightness slider -->
-    <java-symbol type="bool" name="config_linearBrightnessSlider" />
-
 </resources>
