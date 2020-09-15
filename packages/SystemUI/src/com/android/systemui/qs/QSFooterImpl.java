@@ -108,7 +108,7 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
             if (android.os.Build.TYPE.equals("eng")) {
                 super.onChange(selfChange, uri);
                 setBuildText();
-            )
+            }
         }
     };
 
