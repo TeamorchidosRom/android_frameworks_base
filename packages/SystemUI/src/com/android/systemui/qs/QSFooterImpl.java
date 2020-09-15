@@ -105,8 +105,10 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
             new Handler(mContext.getMainLooper())) {
         @Override
         public void onChange(boolean selfChange, Uri uri) {
-            super.onChange(selfChange, uri);
-            setBuildText();
+            if (android.os.Build.TYPE.equals("eng")) {
+                super.onChange(selfChange, uri);
+                setBuildText();
+            }
         }
     };
 
@@ -158,7 +160,10 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
                 oldBottom) -> updateAnimator(right - left));
         setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_YES);
         updateEverything();
-        setBuildText();
+
+        if (android.os.Build.TYPE.equals("eng")) {
+            setBuildText();
+        }
     }
 
     private void setBuildText() {
@@ -252,16 +257,20 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        mContext.getContentResolver().registerContentObserver(
-                Settings.Global.getUriFor(Settings.Global.DEVELOPMENT_SETTINGS_ENABLED), false,
-                mDeveloperSettingsObserver, UserHandle.USER_ALL);
+        if (android.os.Build.TYPE.equals("eng")) {
+            mContext.getContentResolver().registerContentObserver(
+                    Settings.Global.getUriFor(Settings.Global.DEVELOPMENT_SETTINGS_ENABLED), false,
+                    mDeveloperSettingsObserver, UserHandle.USER_ALL);
+        }
     }
 
     @Override
     @VisibleForTesting
     public void onDetachedFromWindow() {
         setListening(false);
-        mContext.getContentResolver().unregisterContentObserver(mDeveloperSettingsObserver);
+        if (android.os.Build.TYPE.equals("eng")) {
+            mContext.getContentResolver().unregisterContentObserver(mDeveloperSettingsObserver);
+        }
         super.onDetachedFromWindow();
     }
 
