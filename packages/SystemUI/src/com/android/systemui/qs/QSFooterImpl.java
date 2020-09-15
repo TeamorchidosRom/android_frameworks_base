@@ -102,13 +102,13 @@ public class QSFooterImpl extends FrameLayout implements QSFooter,
     private OnClickListener mExpandClickListener;
 
     private final ContentObserver mDeveloperSettingsObserver = new ContentObserver(
-                new Handler(mContext.getMainLooper())) {
-        if (android.os.Build.TYPE.equals("eng")) {
-            @Override
-            public void onChange(boolean selfChange, Uri uri) {
+            new Handler(mContext.getMainLooper())) {
+        @Override
+        public void onChange(boolean selfChange, Uri uri) {
+            if (android.os.Build.TYPE.equals("eng")) {
                 super.onChange(selfChange, uri);
                 setBuildText();
-            }
+            )
         }
     };
 
