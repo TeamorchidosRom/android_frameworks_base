@@ -30,11 +30,16 @@ import static com.android.settingslib.RestrictedLockUtils.EnforcedAdmin;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.metrics.LogMaker;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.os.UserHandle;
+import android.os.Vibrator;
+import android.media.AudioAttributes;
+import android.provider.Settings;
 import android.service.quicksettings.Tile;
 import android.text.format.DateUtils;
 import android.util.ArraySet;
@@ -107,12 +112,21 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
 
     private final LifecycleRegistry mLifecycle = new LifecycleRegistry(this);
 
-    public abstract TState newTileState();
+	private static final long VIBRATE_LONG = 40;
+	
+	private static final AudioAttributes VIBRATION_ATTRIBUTES = new AudioAttributes.Builder()
+            .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
+            .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
+            .build();
+    
+	public abstract TState newTileState();
 
     abstract protected void handleClick();
 
     abstract protected void handleUpdateState(TState state, Object arg);
 
+    protected Vibrator mVibrator;
+	
     /**
      * Declare the category of this tile.
      *
@@ -124,6 +138,7 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
     protected QSTileImpl(QSHost host) {
         mHost = host;
         mContext = host.getContext();
+        mVibrator = (Vibrator) mContext.getSystemService(Context.VIBRATOR_SERVICE);
     }
 
     @NonNull
@@ -184,6 +199,27 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
 
     // safe to call from any thread
 
+    public boolean isVibrationEnabled() {
+        return (Settings.Secure.getIntForUser(mContext.getContentResolver(),
+                Settings.System.HAPTIC_FEEDBACK_ENABLED, 0, UserHandle.USER_CURRENT) == 1);
+    }
+
+    /**
+     * Triggers haptic feedback.
+     */
+    private synchronized void vibrate(long duration) {
+        final boolean hapticEnabled = Settings.System.getIntForUser(
+                mContext.getContentResolver(), Settings.System.HAPTIC_FEEDBACK_ENABLED, 1,
+                UserHandle.USER_CURRENT) != 0;
+        if (hapticEnabled) {
+            if (mVibrator == null) {
+                mVibrator = (android.os.Vibrator) mContext
+                        .getSystemService(Context.VIBRATOR_SERVICE);
+            }
+            mVibrator.vibrate(duration, VIBRATION_ATTRIBUTES);
+        }
+    }
+
     public void addCallback(Callback callback) {
         mHandler.obtainMessage(H.ADD_CALLBACK, callback).sendToTarget();
     }
@@ -201,6 +237,7 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
                 .addTaggedData(FIELD_STATUS_BAR_STATE,
                         mStatusBarStateController.getState())));
         mHandler.sendEmptyMessage(H.CLICK);
+        vibrate(VIBRATE_LONG);
     }
 
     public void secondaryClick() {
@@ -220,6 +257,7 @@ public abstract class QSTileImpl<TState extends State> implements QSTile, Lifecy
                 mContext,
                 Prefs.Key.QS_LONG_PRESS_TOOLTIP_SHOWN_COUNT,
                 QuickStatusBarHeader.MAX_TOOLTIP_SHOWN_COUNT);
+        vibrate(VIBRATE_LONG);
     }
 
     public LogMaker populate(LogMaker logMaker) {
