@@ -35,7 +35,7 @@ package com.android.systemui;
 public class ImageUtilities {
     /* blur routine */
     public static Bitmap blurImage(Context context, Bitmap inputBitmap) {
-        float BLUR_RADIUS =25f;
+        float BLUR_RADIUS =12f;
 
         Bitmap outputBitmap = Bitmap.createBitmap(inputBitmap);
 
