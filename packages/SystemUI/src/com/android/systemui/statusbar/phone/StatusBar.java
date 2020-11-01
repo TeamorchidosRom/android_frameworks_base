@@ -1094,14 +1094,12 @@ public class StatusBar extends SystemUI implements DemoMode,
     }
 
     private void drawBlurView() {
-		Bitmap surfaceBitmap = ImageUtilities.screenshotSurface(mContext);
-		Bitmap bittemp = ImageUtilities.blurImage(mContext, surfaceBitmap);
-		Drawable background = new BitmapDrawable(mContext.getResources(), bittemp);
-        if (surfaceBitmap == null) {
-            mQSBlurView.setImageDrawable(null);
-        } else {
-            mQSBlurView.setImageDrawable(background);
-        }
+        WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
+        Drawable wallpaperDrawable = wallpaperManager.getFastDrawable();
+        Bitmap bittempWallpaper = ImageUtilities.drawableToBitmap(wallpaperDrawable);
+        Bitmap bittemp = ImageUtilities.blurImage(mContext, bittempWallpaper);
+        Drawable background = new BitmapDrawable(mContext.getResources(), bittemp);
+        mQSBlurView.setImageDrawable(background);
     }
 
     protected QS createDefaultQSFragment() {
