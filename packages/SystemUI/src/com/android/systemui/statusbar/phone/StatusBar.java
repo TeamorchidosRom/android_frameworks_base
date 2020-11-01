@@ -1094,11 +1094,17 @@ public class StatusBar extends SystemUI implements DemoMode,
     }
 
     private void drawBlurView() {
+        Drawable background;
         WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
-        Drawable wallpaperDrawable = wallpaperManager.getFastDrawable();
-        Bitmap bittempWallpaper = ImageUtilities.drawableToBitmap(wallpaperDrawable);
-        Bitmap bittemp = ImageUtilities.blurImage(mContext, bittempWallpaper);
-        Drawable background = new BitmapDrawable(mContext.getResources(), bittemp);
+        Drawable usersWallpaper = wallpaperManager.getFastDrawable();
+        if (mContext.getSystemService(ActivityManager.class).isLowRamDevice()) {
+	        background = usersWallpaper;
+        } else {
+            Bitmap BitmapWallpaper = ImageUtilities.drawableToBitmap(usersWallpaper);
+	        Bitmap qsPanelBg = ImageUtilities.blurImage(mContext, BitmapWallpaper);
+            background = new BitmapDrawable(mContext.getResources(), qsPanelBg);
+        }
+         
         mQSBlurView.setImageDrawable(background);
     }
 

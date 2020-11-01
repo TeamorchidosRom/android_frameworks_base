@@ -1784,11 +1784,19 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
             Window window = getWindow();
             View v1 = window.getDecorView();
             window.requestFeature(Window.FEATURE_NO_TITLE);
+
+            // Global Actions Blur
+            Drawable background;
             WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
-	        Drawable wallpaperDrawable = wallpaperManager.getFastDrawable();
-	        Bitmap bittempWallpaper = ImageUtilities.drawableToBitmap(wallpaperDrawable);
-	        Bitmap bittemp = ImageUtilities.blurImage(mContext, bittempWallpaper);
-	        Drawable background = new BitmapDrawable(mContext.getResources(), bittemp);
+            Drawable usersWallpaper = wallpaperManager.getFastDrawable();
+            if (getContext().getSystemService(ActivityManager.class).isLowRamDevice()) {
+                background = usersWallpaper;
+            } else {
+                Bitmap BitmapWallpaper = ImageUtilities.drawableToBitmap(usersWallpaper);
+                Bitmap glbalActionsBg = ImageUtilities.blurImage(mContext, BitmapWallpaper);
+                background = new BitmapDrawable(mContext.getResources(), glbalActionsBg);
+            }
+            
             // Inflate the decor view, so the attributes below are not overwritten by the theme.
             window.getDecorView();
             window.getAttributes().systemUiVisibility |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
@@ -1888,11 +1896,18 @@ public class GlobalActionsDialog implements DialogInterface.OnDismissListener,
                 mScrimAlpha = ScrimController.GRADIENT_SCRIM_ALPHA;
             }
             getWindow().setBackgroundDrawable(mBackgroundDrawable);
+
+            // Global Actions Blur
+            Drawable background;
             WallpaperManager wallpaperManager = WallpaperManager.getInstance(mContext);
-	        Drawable wallpaperDrawable = wallpaperManager.getDrawable();
-	        Bitmap bittempWallpaper = ImageUtilities.drawableToBitmap(wallpaperDrawable);
-	        Bitmap bittemp = ImageUtilities.blurImage(mContext, bittempWallpaper);
-	        Drawable background = new BitmapDrawable(mContext.getResources(), bittemp);
+            Drawable usersWallpaper = wallpaperManager.getFastDrawable();
+            if (getContext().getSystemService(ActivityManager.class).isLowRamDevice()) {
+                background = usersWallpaper;
+            } else {
+                Bitmap BitmapWallpaper = ImageUtilities.drawableToBitmap(usersWallpaper);
+                Bitmap glbalActionsBg = ImageUtilities.blurImage(mContext, BitmapWallpaper);
+                background = new BitmapDrawable(mContext.getResources(), glbalActionsBg);
+            }
             getWindow().setBackgroundDrawable(background);
         }
 
