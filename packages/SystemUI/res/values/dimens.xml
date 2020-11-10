@@ -271,10 +271,10 @@
     <dimen name="status_bar_icon_padding">0dp</dimen>
 
     <!-- the padding on the start of the statusbar -->
-    <dimen name="status_bar_padding_start">8dp</dimen>
+    <dimen name="status_bar_padding_start">16dp</dimen>
 
     <!-- the padding on the end of the statusbar -->
-    <dimen name="status_bar_padding_end">8dp</dimen>
+    <dimen name="status_bar_padding_end">16dp</dimen>
 
     <!-- the padding on the top of the statusbar (usually 0) -->
     <dimen name="status_bar_padding_top">0dp</dimen>
@@ -358,7 +358,7 @@
     <dimen name="qs_footer_action_button_size">@dimen/qs_footer_height</dimen>
 
     <!-- Margins on each side of QS Footer -->
-    <dimen name="qs_footer_margin">2dp</dimen>
+    <dimen name="qs_footer_margin">4dp</dimen>
 
     <dimen name="quick_qs_drag_handle_height">20dp</dimen>
 
@@ -474,7 +474,7 @@
     <dimen name="qs_tile_icon_size">24dp</dimen>
     <dimen name="qs_tile_text_size">12sp</dimen>
     <dimen name="qs_tile_divider_height">1dp</dimen>
-    <dimen name="qs_panel_padding">16dp</dimen>
+    <dimen name="qs_panel_padding">32dp</dimen>
     <dimen name="qs_dual_tile_height">112dp</dimen>
     <dimen name="qs_dual_tile_padding_vertical">8dp</dimen>
     <dimen name="qs_dual_tile_padding_horizontal">6dp</dimen>
