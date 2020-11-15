@@ -59,7 +59,7 @@ public class ClockController implements TunerService.Tunable {
                 return mCenterClock;
             case CLOCK_POSITION_LEFT:
             default:
-                return mCenterClock;
+                return mLeftClock;
         }
     }
 
