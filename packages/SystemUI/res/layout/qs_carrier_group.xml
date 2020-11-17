@@ -19,7 +19,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/qs_mobile"
     android:layout_width="0dp"
-    android:layout_height="match_parent"
+    android:layout_height="@dimen/qs_header_tooltip_height"
+	android:layout_below="@id/quick_status_bar_system_icons"
     android:layout_weight="1"
     android:gravity="end|center_vertical"
     android:orientation="horizontal">
@@ -28,7 +29,7 @@
     <com.android.systemui.util.AutoMarqueeTextView
         android:id="@+id/no_carrier_text"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/qs_header_tooltip_height"
         android:textAppearance="@style/TextAppearance.QS.Status"
         android:textDirection="locale"
         android:marqueeRepeatLimit="marquee_forever"
@@ -44,7 +45,7 @@
     <View
         android:id="@+id/qs_carrier_divider1"
         android:layout_width="@dimen/qs_header_carrier_separator_width"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/qs_header_tooltip_height"
         android:visibility="gone"
         android:importantForAccessibility="no"/>
 
@@ -57,7 +58,7 @@
     <View
         android:id="@+id/qs_carrier_divider2"
         android:layout_width="@dimen/qs_header_carrier_separator_width"
-        android:layout_height="match_parent"
+        android:layout_height="@dimen/qs_header_tooltip_height"
         android:layout_weight="1"
         android:visibility="gone"
         android:importantForAccessibility="no"/>

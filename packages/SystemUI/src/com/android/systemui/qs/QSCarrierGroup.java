@@ -20,6 +20,7 @@ import static com.android.systemui.util.InjectionInflationController.VIEW_CONTEX
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.provider.Settings;
 import android.telephony.SubscriptionManager;
 import android.util.AttributeSet;
@@ -158,7 +159,9 @@ public class QSCarrierGroup extends LinearLayout implements
 
     @Override
     public void updateCarrierInfo(CarrierTextController.CarrierTextCallbackInfo info) {
+		final Resources res = mContext.getResources();
         mNoSimTextView.setVisibility(View.GONE);
+		setPadding(0, 0, 0, 0);
         if (!info.airplaneMode && info.anySimReady) {
             boolean[] slotSeen = new boolean[SIM_SLOTS];
             if (info.listOfCarriers.length == info.subscriptionIds.length) {
@@ -199,6 +202,7 @@ public class QSCarrierGroup extends LinearLayout implements
             }
             mNoSimTextView.setText(info.carrierText);
             mNoSimTextView.setVisibility(View.VISIBLE);
+			setPadding(0, res.getDimensionPixelSize(R.dimen.qs_panel_padding_top), 0, res.getDimensionPixelSize(R.dimen.qs_panel_padding_top));
         }
         handleUpdateState();
     }
