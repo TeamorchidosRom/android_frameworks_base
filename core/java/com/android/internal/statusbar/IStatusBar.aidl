@@ -132,7 +132,7 @@ oneway interface IStatusBar
     void showPinningEnterExitToast(boolean entering);
     void showPinningEscapeToast();
 
-    void showShutdownUi(boolean isReboot, String reason);
+    void showShutdownUi(boolean isReboot, String reason, boolean rebootCustom);
 
     // Used to show the authentication dialog (Biometrics, Device Credential)
     void showAuthenticationDialog(in Bundle bundle, IBiometricServiceReceiverInternal receiver,
@@ -227,4 +227,15 @@ oneway interface IStatusBar
      * display.
      */
     void suppressAmbientDisplay(boolean suppress);
+
+    /**
+     *  Used to show or hide in display fingerprint view.
+     */
+    void showInDisplayFingerprintView();
+    void hideInDisplayFingerprintView();
+
+    /**
+     * Used to block or unblock usage of gestural navigation
+     */
+    void setBlockedGesturalNavigation(boolean blocked);
 }

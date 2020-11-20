@@ -45,6 +45,7 @@ import android.os.PowerManager;
 import android.os.SystemClock;
 import android.util.Log;
 import android.util.MathUtils;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -113,7 +114,10 @@ import com.android.systemui.statusbar.policy.KeyguardStateController;
 import com.android.systemui.statusbar.policy.KeyguardUserSwitcher;
 import com.android.systemui.statusbar.policy.OnHeadsUpChangedListener;
 import com.android.systemui.statusbar.policy.ZenModeController;
+import com.android.systemui.tuner.TunerService;
 import com.android.systemui.util.InjectionInflationController;
+
+import lineageos.providers.LineageSettings;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -189,6 +193,11 @@ public class NotificationPanelViewController extends PanelViewController {
     private static final String COUNTER_PANEL_OPEN_QS = "panel_open_qs";
     private static final String COUNTER_PANEL_OPEN_PEEK = "panel_open_peek";
 
+    private static final String STATUS_BAR_QUICK_QS_PULLDOWN =
+            "lineagesystem:" + LineageSettings.System.STATUS_BAR_QUICK_QS_PULLDOWN;
+    private static final String DOUBLE_TAP_SLEEP_GESTURE =
+            "lineagesystem:" + LineageSettings.System.DOUBLE_TAP_SLEEP_GESTURE;
+
     private static final Rect M_DUMMY_DIRTY_RECT = new Rect(0, 0, 1, 1);
     private static final Rect EMPTY_RECT = new Rect();
 
@@ -252,6 +261,7 @@ public class NotificationPanelViewController extends PanelViewController {
     private final ConversationNotificationManager mConversationNotificationManager;
     private final MediaHierarchyManager mMediaHierarchyManager;
     private final StatusBarKeyguardViewManager mStatusBarKeyguardViewManager;
+    private final TunerService mTunerService;
 
     private KeyguardAffordanceHelper mAffordanceHelper;
     private KeyguardUserSwitcher mKeyguardUserSwitcher;
@@ -414,6 +424,8 @@ public class NotificationPanelViewController extends PanelViewController {
     private final NotificationLockscreenUserManager mLockscreenUserManager;
     private final ShadeController mShadeController;
     private int mDisplayId;
+    private boolean mDoubleTapToSleepEnabled;
+    private GestureDetector mDoubleTapGesture;
 
     /**
      * Cache the resource id of the theme to avoid unnecessary work in onThemeChanged.
@@ -473,6 +485,8 @@ public class NotificationPanelViewController extends PanelViewController {
         }
     };
 
+    private int mOneFingerQuickSettingsIntercept;
+
     @Inject
     public NotificationPanelViewController(NotificationPanelView view,
             InjectionInflationController injectionInflationController,
@@ -495,7 +509,8 @@ public class NotificationPanelViewController extends PanelViewController {
             ConversationNotificationManager conversationNotificationManager,
             MediaHierarchyManager mediaHierarchyManager,
             BiometricUnlockController biometricUnlockController,
-            StatusBarKeyguardViewManager statusBarKeyguardViewManager) {
+            StatusBarKeyguardViewManager statusBarKeyguardViewManager,
+            TunerService tunerService) {
         super(view, falsingManager, dozeLog, keyguardStateController,
                 (SysuiStatusBarStateController) statusBarStateController, vibratorHelper,
                 latencyTracker, flingAnimationUtilsBuilder, statusBarTouchableRegionManager);
@@ -507,6 +522,7 @@ public class NotificationPanelViewController extends PanelViewController {
         mFlingAnimationUtilsBuilder = flingAnimationUtilsBuilder;
         mMediaHierarchyManager = mediaHierarchyManager;
         mStatusBarKeyguardViewManager = statusBarKeyguardViewManager;
+        mTunerService = tunerService;
         mView.setWillNotDraw(!DEBUG);
         mInjectionInflationController = injectionInflationController;
         mFalsingManager = falsingManager;
@@ -553,6 +569,16 @@ public class NotificationPanelViewController extends PanelViewController {
         });
         mBottomAreaShadeAlphaAnimator.setDuration(160);
         mBottomAreaShadeAlphaAnimator.setInterpolator(Interpolators.ALPHA_OUT);
+        mDoubleTapGesture = new GestureDetector(mView.getContext(),
+                new GestureDetector.SimpleOnGestureListener() {
+            @Override
+            public boolean onDoubleTap(MotionEvent e) {
+                if (mPowerManager != null) {
+                    mPowerManager.goToSleep(e.getEventTime());
+                }
+                return true;
+            }
+        });
         mShadeController = shadeController;
         mLockscreenUserManager = notificationLockscreenUserManager;
         mEntryManager = notificationEntryManager;
@@ -1318,7 +1344,22 @@ public class NotificationPanelViewController extends PanelViewController {
                         MotionEvent.BUTTON_SECONDARY) || event.isButtonPressed(
                         MotionEvent.BUTTON_TERTIARY));
 
-        return twoFingerDrag || stylusButtonClickDrag || mouseButtonClickDrag;
+        final float w = mView.getMeasuredWidth();
+        final float x = event.getX();
+        float region = w * 1.f / 4.f; // TODO overlay region fraction?
+        boolean showQsOverride = false;
+
+        switch (mOneFingerQuickSettingsIntercept) {
+            case 1: // Right side pulldown
+                showQsOverride = mView.isLayoutRtl() ? x < region : w - region < x;
+                break;
+            case 2: // Left side pulldown
+                showQsOverride = mView.isLayoutRtl() ? w - region < x : x < region;
+                break;
+        }
+        showQsOverride &= mBarState == StatusBarState.SHADE;
+
+        return twoFingerDrag || showQsOverride || stylusButtonClickDrag || mouseButtonClickDrag;
     }
 
     private void handleQsDown(MotionEvent event) {
@@ -2626,7 +2667,7 @@ public class NotificationPanelViewController extends PanelViewController {
      * @param x the x-coordinate the touch event
      */
     protected void updateVerticalPanelPosition(float x) {
-        if (mNotificationStackScroller.getWidth() * 1.75f > mView.getWidth()) {
+        if (mKeyguardShowing || mNotificationStackScroller.getWidth() * 1.75f > mView.getWidth()) {
             resetHorizontalPanelPosition();
             return;
         }
@@ -3156,6 +3197,10 @@ public class NotificationPanelViewController extends PanelViewController {
                     return false;
                 }
 
+                if (mDoubleTapToSleepEnabled && mBarState == StatusBarState.KEYGUARD) {
+                    mDoubleTapGesture.onTouchEvent(event);
+                }
+
                 // Make sure the next touch won't the blocked after the current ends.
                 if (event.getAction() == MotionEvent.ACTION_UP
                         || event.getAction() == MotionEvent.ACTION_CANCEL) {
@@ -3606,13 +3651,16 @@ public class NotificationPanelViewController extends PanelViewController {
         }
     }
 
-    private class OnAttachStateChangeListener implements View.OnAttachStateChangeListener {
+    private class OnAttachStateChangeListener implements View.OnAttachStateChangeListener,
+            TunerService.Tunable {
         @Override
         public void onViewAttachedToWindow(View v) {
             FragmentHostManager.get(mView).addTagListener(QS.TAG, mFragmentListener);
             mStatusBarStateController.addCallback(mStatusBarStateListener);
             mZenModeController.addCallback(mZenModeControllerCallback);
             mConfigurationController.addCallback(mConfigurationListener);
+            mTunerService.addTunable(this, STATUS_BAR_QUICK_QS_PULLDOWN);
+            mTunerService.addTunable(this, DOUBLE_TAP_SLEEP_GESTURE);
             mUpdateMonitor.registerCallback(mKeyguardUpdateCallback);
             // Theme might have changed between inflating this view and attaching it to the
             // window, so
@@ -3626,7 +3674,17 @@ public class NotificationPanelViewController extends PanelViewController {
             mStatusBarStateController.removeCallback(mStatusBarStateListener);
             mZenModeController.removeCallback(mZenModeControllerCallback);
             mConfigurationController.removeCallback(mConfigurationListener);
+            mTunerService.removeTunable(this);
             mUpdateMonitor.removeCallback(mKeyguardUpdateCallback);
+        }
+
+        @Override
+        public void onTuningChanged(String key, String newValue) {
+            if (STATUS_BAR_QUICK_QS_PULLDOWN.equals(key)) {
+                mOneFingerQuickSettingsIntercept = TunerService.parseInteger(newValue, 1);
+            } else if (DOUBLE_TAP_SLEEP_GESTURE.equals(key)) {
+                mDoubleTapToSleepEnabled = TunerService.parseIntegerSwitch(newValue, true);
+            }
         }
     }
 

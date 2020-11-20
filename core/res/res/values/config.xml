@@ -910,6 +910,7 @@
             3 - Power off (without confirmation)
             4 - Go to voice assist
             5 - Go to assistant (Settings.Secure.ASSISTANT)
+            6 - Toggle torch on / off (if screen is off)
     -->
     <integer name="config_longPressOnPowerBehavior">1</integer>
 
@@ -2774,6 +2775,7 @@
         <item>power</item>
         <item>restart</item>
         <item>logout</item>
+        <item>screenshot</item>
         <item>bugreport</item>
     </string-array>
 
@@ -3477,6 +3479,7 @@
      mode -->
     <string-array translatable="false" name="config_priorityOnlyDndExemptPackages">
         <item>com.android.dialer</item>
+        <item>com.android.server.telecom</item>
         <item>com.android.systemui</item>
         <item>android</item>
     </string-array>

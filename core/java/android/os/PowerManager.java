@@ -344,6 +344,15 @@ public final class PowerManager {
 
     /**
      * @hide
+     * User activity flag: Certain hardware buttons are not supposed to
+     * activate hardware button illumination.  This flag indicates a
+     * button event from one of those buttons.
+     * @hide
+     */
+    public static final int USER_ACTIVITY_FLAG_NO_BUTTON_LIGHTS = 1 << 2;
+
+    /**
+     * @hide
      */
     public static final int GO_TO_SLEEP_REASON_MIN = 0;
 
@@ -456,7 +465,9 @@ public final class PowerManager {
             BRIGHTNESS_CONSTRAINT_TYPE_DOZE,
             BRIGHTNESS_CONSTRAINT_TYPE_MINIMUM_VR,
             BRIGHTNESS_CONSTRAINT_TYPE_MAXIMUM_VR,
-            BRIGHTNESS_CONSTRAINT_TYPE_DEFAULT_VR
+            BRIGHTNESS_CONSTRAINT_TYPE_DEFAULT_VR,
+            BRIGHTNESS_CONSTRAINT_TYPE_DEFAULT_BUTTON,
+            BRIGHTNESS_CONSTRAINT_TYPE_DEFAULT_KEYBOARD
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface BrightnessConstraint{}
@@ -507,6 +518,18 @@ public final class PowerManager {
      * @hide
      */
     public static final int BRIGHTNESS_CONSTRAINT_TYPE_DEFAULT_VR = 7;
+
+    /**
+     * Brightness constraint type: minimum allowed value.
+     * @hide
+     */
+    public static final int BRIGHTNESS_CONSTRAINT_TYPE_DEFAULT_BUTTON = 8;
+
+    /**
+     * Brightness constraint type: minimum allowed value.
+     * @hide
+     */
+    public static final int BRIGHTNESS_CONSTRAINT_TYPE_DEFAULT_KEYBOARD = 9;
 
     /**
      * @hide
@@ -644,6 +667,27 @@ public final class PowerManager {
      * @hide
      */
     public static final String REBOOT_RECOVERY_UPDATE = "recovery-update";
+
+    /**
+     * The value to pass as the 'reason' argument to reboot() to
+     * reboot into bootloader mode
+     * @hide
+     */
+    public static final String REBOOT_BOOTLOADER = "bootloader";
+
+    /**
+     * The value to pass as the 'reason' argument to reboot() to
+     * reboot into download mode
+     * @hide
+     */
+    public static final String REBOOT_DOWNLOAD = "download";
+
+    /**
+     * The value to pass as the 'reason' argument to reboot() to
+     * reboot into fastboot mode
+     * @hide
+     */
+    public static final String REBOOT_FASTBOOT = "fastboot";
 
     /**
      * The value to pass as the 'reason' argument to reboot() when device owner requests a reboot on
@@ -1332,6 +1376,22 @@ public final class PowerManager {
     }
 
     /**
+     * Forces the device to wake up from sleep only if
+     * nothing is blocking the proximity sensor
+     *
+     * @see #wakeUp
+     *
+     * @hide
+     */
+    public void wakeUpWithProximityCheck(long time, @WakeReason int reason, String details) {
+        try {
+            mService.wakeUpWithProximityCheck(time, reason, details, mContext.getOpPackageName());
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
      * Forces the device to start napping.
      * <p>
      * If the device is currently awake, starts dreaming, otherwise does nothing.
@@ -1523,6 +1583,24 @@ public final class PowerManager {
         }
         try {
             mService.reboot(false, reason, true);
+        } catch (RemoteException e) {
+            throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * Reboot the device.  Will not return if the reboot is successful.
+     * <p>
+     * Requires the {@link android.Manifest.permission#REBOOT} permission.
+     * </p>
+     *
+     * @param reason code to pass to the kernel (e.g., "recovery", "bootloader", "download") to
+     *               request special boot modes, or null.
+     * @hide
+     */
+    public void rebootCustom(String reason) {
+        try {
+            mService.rebootCustom(false, reason, true);
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
         }
@@ -2039,6 +2117,18 @@ public final class PowerManager {
             return forecast;
         } catch (RemoteException e) {
             throw e.rethrowFromSystemServer();
+        }
+    }
+
+    /**
+     * @hide
+     */
+    public void setKeyboardVisibility(boolean visible) {
+        try {
+            if (mService != null) {
+                mService.setKeyboardVisibility(visible);
+            }
+        } catch (RemoteException e) {
         }
     }
 

@@ -656,6 +656,15 @@
     <!-- For tether entitlement recheck-->
     <protected-broadcast
         android:name="com.android.server.connectivity.tethering.PROVISIONING_RECHECK_ALARM" />
+
+    <!-- LineageOS additions -->
+
+    <!-- Used for long press power torch feature - automatic turn off on timeout -->
+    <protected-broadcast android:name="com.android.server.policy.PhoneWindowManager.ACTION_TORCH_OFF" />
+
+    <!-- Used to launch a common app (FlipFlap) for devices with flip cover. -->
+    <protected-broadcast android:name="lineageos.intent.action.LID_STATE_CHANGED" />
+
     <!-- ====================================================================== -->
     <!--                          RUNTIME PERMISSIONS                           -->
     <!-- ====================================================================== -->
@@ -5035,6 +5044,14 @@
     <!-- @hide @SystemApi Allows an application to access locusId events in the usage stats. -->
     <permission android:name="android.permission.ACCESS_LOCUS_ID_USAGE_STATS"
                 android:protectionLevel="signature|appPredictor" />
+
+    <!-- LineageOS additions -->
+
+    <!-- Allows an application to override the power key action
+         @hide <p>Not for use by third-party applications.
+    -->
+    <permission android:name="lineage.permission.PREVENT_POWER_KEY"
+                android:protectionLevel="signature|privileged" />
 
     <!-- Attribution for Country Detector. -->
     <attribution android:tag="CountryDetector" android:label="@string/country_detector"/>
