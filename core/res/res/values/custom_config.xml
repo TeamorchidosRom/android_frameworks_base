@@ -25,6 +25,6 @@
     <bool name="config_hasInternalAudioRecordingSupport">true</bool>
 
 	<!-- Whether device uses linear screen brightness slider -->
-    <bool name="config_linearBrightnessSlider">false</bool>
+    <bool name="config_linearBrightnessSlider">true</bool>
 
 </resources>
