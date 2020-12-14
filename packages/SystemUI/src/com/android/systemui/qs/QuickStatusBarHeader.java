@@ -159,6 +159,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
     private BrightnessController mBrightnessController;
     private boolean mIsQuickQsBrightnessEnabled;
     private boolean mIsQsAutoBrightnessEnabled;
+	private boolean mIsQsExpanded;
 
     private PrivacyItemController mPrivacyItemController;
 
@@ -394,10 +395,8 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         int qqsHeight = mContext.getResources().getDimensionPixelSize(
                 R.dimen.qs_quick_header_panel_height);
 
-        if (mIsQuickQsBrightnessEnabled) {
+        if (mIsQuickQsBrightnessEnabled && !mIsQsExpanded) {
             qqsHeight += mContext.getResources().getDimensionPixelSize(
-                    R.dimen.brightness_mirror_height)
-                    + mContext.getResources().getDimensionPixelSize(
                     R.dimen.qs_tile_margin_top);
         }
 
@@ -417,7 +416,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
                 com.android.internal.R.dimen.quick_qs_offset_height);
         mSystemIconsView.setLayoutParams(mSystemIconsView.getLayoutParams());
 
-        if (mIsQuickQsBrightnessEnabled) {
+        if (mIsQuickQsBrightnessEnabled && !mIsQsExpanded) {
             if (mIsQsAutoBrightnessEnabled && resources.getBoolean(
                     com.android.internal.R.bool.config_automatic_brightness_available)) {
                 mQuickQsBrightness.findViewById(R.id.brightness_icon).setVisibility(View.VISIBLE);
@@ -510,8 +509,10 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         if (mIsQuickQsBrightnessEnabled) {
             if (keyguardExpansionFraction > 0) {
                 mQuickQsBrightness.setVisibility(INVISIBLE);
+				mIsQsExpanded = true;
             } else {
                 mQuickQsBrightness.setVisibility(VISIBLE);
+				mIsQsExpanded = false;
             }
         }
     }
@@ -571,7 +572,7 @@ public class QuickStatusBarHeader extends RelativeLayout implements
         final int sp = getResources().getDimensionPixelSize(R.dimen.notification_side_paddings);
         RelativeLayout.LayoutParams lpQuickQsBrightness = (RelativeLayout.LayoutParams)
                 mQuickQsBrightness.getLayoutParams();
-        lpQuickQsBrightness.setMargins(sp - mPaddingLeft, 0, sp - mPaddingRight, 0);
+        lpQuickQsBrightness.setMargins(sp - mPaddingLeft, 32, sp - mPaddingRight, 32);
         mQuickQsBrightness.setLayoutParams(lpQuickQsBrightness);
         return super.onApplyWindowInsets(insets);
     }
