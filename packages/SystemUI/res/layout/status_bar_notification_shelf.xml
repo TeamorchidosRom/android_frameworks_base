@@ -37,7 +37,8 @@
         android:layout_height="match_parent"
         android:paddingStart="@dimen/shelf_icon_container_padding"
         android:paddingEnd="@dimen/shelf_icon_container_padding"
-        android:gravity="center_vertical" />
+        android:gravity="center_vertical" 
+		android:visibility="gone"/>
 
     <com.android.systemui.statusbar.notification.FakeShadowView
         android:id="@+id/fake_shadow"
