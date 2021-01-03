@@ -4508,8 +4508,6 @@ public final class Settings {
          */
         public static final String SHOW_BATTERY_PERCENT = "dummy_show_battery_percent";
 
-<<<<<<< HEAD
-=======
         /** Whether to show ambient or lockscreen if AoD is disabled
          * and we do a wake gesture like lift to wake or double tap
          *
@@ -4540,7 +4538,6 @@ public final class Settings {
         private static final Validator NAVIGATION_BAR_ARROW_KEYS_VALIDATOR =
                 BOOLEAN_VALIDATOR;
 
->>>>>>> parent of 80e72a1916f5... liquid
         /**
          * IMPORTANT: If you add a new public settings you also have to add it to
          * PUBLIC_SETTINGS below. If the new setting is hidden you have to add
