@@ -17,7 +17,7 @@
 -->
 <resources>
     <!-- Amount to offset bottom of notification peek window from top of status bar. -->
-    <dimen name="peek_window_y_offset">-12dp</dimen>
+    <dimen name="peek_window_y_offset">-13dp</dimen>
 
     <!-- thickness (height) of the navigation bar on phones that require it -->
     <dimen name="navigation_bar_size">@*android:dimen/navigation_bar_height</dimen>
@@ -63,17 +63,17 @@
     <dimen name="status_bar_icon_size">@*android:dimen/status_bar_icon_size</dimen>
 
     <!-- Default horizontal drawable padding for status bar icons. -->
-    <dimen name="status_bar_horizontal_padding">2.0dp</dimen>
+    <dimen name="status_bar_horizontal_padding">1.5dp</dimen>
 
     <!-- Height of the battery icon in the status bar. -->
-    <dimen name="status_bar_battery_icon_height">11.0dp</dimen>
+    <dimen name="status_bar_battery_icon_height">10.0dp</dimen>
 
     <!-- Width of the battery icon in the status bar. The battery drawable assumes a 12x20 canvas,
     so the width of the icon should be 13.0dp * (12.0 / 20.0) -->
-    <dimen name="status_bar_battery_icon_width">7.4dp</dimen>
+    <dimen name="status_bar_battery_icon_width">7.0dp</dimen>
 
     <!-- The font size for the clock in the status bar. -->
-    <dimen name="status_bar_clock_size">15sp</dimen>
+    <dimen name="status_bar_clock_size">16sp</dimen>
 
     <!-- The starting padding for the clock in the status bar. -->
     <dimen name="status_bar_clock_starting_padding">6dp</dimen>
@@ -344,7 +344,7 @@
     <dimen name="qs_header_system_icons_area_height">48dp</dimen>
 
     <!-- How far the quick-quick settings panel extends below the status bar -->
-    <dimen name="qs_quick_header_panel_height">140dp</dimen>
+    <dimen name="qs_quick_header_panel_height">144dp</dimen>
     <!-- The height of the container that holds the system icons in the quick settings header in the
          car setting. -->
     <dimen name="car_qs_header_system_icons_area_height">54dp</dimen>
@@ -368,10 +368,10 @@
     <dimen name="qs_notification_padding">14dp</dimen>
 
     <!-- Height of the status bar header bar when expanded -->
-    <dimen name="status_bar_header_height_expanded">144dp</dimen>
+    <dimen name="status_bar_header_height_expanded">146dp</dimen>
 
     <!-- Height of the status bar header bar when on Keyguard -->
-    <dimen name="status_bar_header_height_keyguard">40dp</dimen>
+    <dimen name="status_bar_header_height_keyguard">42dp</dimen>
 
     <!-- Margin start of the system icons super container -->
     <dimen name="system_icons_super_container_margin_start">16dp</dimen>
@@ -451,7 +451,7 @@
     <!-- The size of the gesture span needed to activate the "pull" notification expansion -->
     <dimen name="pull_span_min">25dp</dimen>
 
-    <dimen name="qs_tile_height">106dp</dimen>
+    <dimen name="qs_tile_height">108dp</dimen>
     <dimen name="qs_tile_layout_margin_side">6dp</dimen>
     <dimen name="qs_tile_margin_horizontal">18dp</dimen>
     <dimen name="qs_tile_margin_vertical">24dp</dimen>
@@ -717,7 +717,7 @@
     <!-- The top padding of the clear all button -->
     <dimen name="clear_all_padding_top">12dp</dimen>
 
-    <dimen name="notification_section_header_height">28dp</dimen>
+    <dimen name="notification_section_header_height">27dp</dimen>
     <dimen name="notification_section_header_padding_left">16dp</dimen>
 
     <!-- Largest size an avatar might need to be drawn in the user picker, status bar, or
