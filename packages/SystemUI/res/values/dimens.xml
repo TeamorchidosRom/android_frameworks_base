@@ -337,7 +337,7 @@
     <dimen name="car_status_bar_header_height">128dp</dimen>
 
     <!-- The bottom padding of the status bar header. -->
-    <dimen name="status_bar_header_padding_bottom">40dp</dimen>)
+    <dimen name="status_bar_header_padding_bottom">40dp</dimen>
 
     <!-- The height of the container that holds the battery and time in the quick settings header.
          -->
